@@ -3,8 +3,12 @@ name: CI Python avec uv
 on:
   push:
     branches: [ '**' ]
+    paths:
+      - "backend/**"
   pull_request:
     branches: [ main, develop ]
+    paths:
+      - "backend/**"
 
 jobs:
   format:
