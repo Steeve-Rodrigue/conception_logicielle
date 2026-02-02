@@ -15,6 +15,9 @@ jobs:
   format:
     name: Format check avec Ruff
     runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: backend
     
     steps:
     - name: Récupérer le code
@@ -37,6 +40,9 @@ jobs:
   lint:
     name: Linting avec Ruff
     runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: backend
     
     steps:
     - name: Récupérer le code
@@ -59,6 +65,9 @@ jobs:
   test:
     name: Tests avec pytest
     runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: backend/tests
     
     steps:
     - name: Récupérer le code
