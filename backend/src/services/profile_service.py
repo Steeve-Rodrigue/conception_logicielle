@@ -48,11 +48,13 @@ class ProfileService:
         if self.profile_dao.creer_profil(profile):
             logging.info(f"Profil créé pour utilisateur {id_utilisateur}")
             return profile
-        
+
         logging.error("Échec création profil")
         return None
 
-    def obtenir_profil_utilisateur(self, id_utilisateur: int) -> Optional[CandidateProfile]:
+    def obtenir_profil_utilisateur(
+        self, id_utilisateur: int
+    ) -> Optional[CandidateProfile]:
         """Récupère le profil d'un utilisateur"""
         return self.profile_dao.obtenir_profil_par_utilisateur(id_utilisateur)
 
@@ -106,4 +108,3 @@ class ProfileService:
     def supprimer_competence(self, id_user_skill: int) -> bool:
         """Supprime une compétence"""
         return self.skill_dao.supprimer_competence(id_user_skill)
-

@@ -53,7 +53,7 @@ class UserService:
             logging.error(f"Pseudo déjà utilisé: {pseudo}")
             return None
 
-        # Hashage du mot de passe 
+        # Hashage du mot de passe
         mdp_hash = hash_password(mdp)
 
         # Création de l'utilisateur
@@ -73,7 +73,7 @@ class UserService:
                 titre_professionnel="Non renseigné",
                 annees_experience=0,
                 date_disponibilite=date.today() + timedelta(days=30),
-                type_contrat_recherche="CDI"
+                type_contrat_recherche="CDI",
             )
             return user
         return None
@@ -87,7 +87,7 @@ class UserService:
             logging.warning(f"Tentative de connexion échouée pour email: {email}")
             return None
 
-        # Vérification du mot de passe 
+        # Vérification du mot de passe
         if verify_password(mdp, user.mdp_hash):
             self.user_dao.mettre_a_jour_derniere_connexion(user.id_utilisateur)
             return user
@@ -101,7 +101,7 @@ class UserService:
         email: Optional[str] = None,
         pseudo: Optional[str] = None,
         nom: Optional[str] = None,
-        prenom: Optional[str] = None
+        prenom: Optional[str] = None,
     ) -> bool:
         """Modifie les informations d'un utilisateur"""
         user = self.user_dao.trouver_par_id(id_utilisateur)
@@ -111,11 +111,13 @@ class UserService:
         # Mise à jour des champs fournis
         if email and email != user.email:
             # Validation email
-            user_temp = User(email=email, pseudo="temp", mot_de_passe_hash="", nom="", prenom="")
+            user_temp = User(
+                email=email, pseudo="temp", mot_de_passe_hash="", nom="", prenom=""
+            )
             if not user_temp.valider_email():
                 logging.error(f"Email invalide: {email}")
                 return False
-            
+
             if self.email_deja_utilise(email):
                 logging.error(f"Email déjà utilisé: {email}")
                 return False
