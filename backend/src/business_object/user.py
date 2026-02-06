@@ -37,7 +37,6 @@ class User:
         prenom: str,
         date_creation: Optional[datetime] = None,
         date_derniere_connexion: Optional[datetime] = None,
-        est_actif: bool = True,
     ):
         self.id_utilisateur = id_utilisateur
         self.email = email
@@ -47,9 +46,9 @@ class User:
         self.prenom = prenom
         self.date_creation = date_creation or datetime.now()
         self.date_derniere_connexion = date_derniere_connexion
-        self.est_actif = est_actif
 
     def valider_email(self) -> bool:
         """Valide le format de l'email"""
         pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         return re.match(pattern, self.email) is not None
+

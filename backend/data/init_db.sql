@@ -1,0 +1,58 @@
+-- ============================================================================
+-- Script d'initialisation - Table utilisateurs uniquement
+-- ============================================================================
+
+-- Supprimer le schéma s'il existe
+DROP SCHEMA IF EXISTS app CASCADE;
+
+-- Créer le schéma
+CREATE SCHEMA app;
+
+
+-- ============================================================================
+-- TABLE UTILISATEURS
+-- ============================================================================
+CREATE TABLE app.utilisateurs (
+    id_utilisateur SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    nom VARCHAR(100),
+    prenom VARCHAR(100),
+    mdp_hash VARCHAR(255) NOT NULL,
+    est_admin BOOLEAN DEFAULT FALSE,
+    date_creation TIMESTAMP DEFAULT NOW(),
+    date_derniere_connexion TIMESTAMP
+);
+
+-- Index pour optimiser la recherche par email
+CREATE INDEX idx_utilisateurs_email ON app.utilisateurs(email);
+
+
+CREATE TABLE app.candidate_profile (
+    id_profil SERIAL PRIMARY KEY,
+    id_utilisateur INT NOT NULL,
+    titre_professionnel VARCHAR(150) NOT NULL,
+    annees_experience INT DEFAULT 0,
+    date_disponibilite DATE NOT NULL,
+    type_contrat_recherche VARCHAR(50),
+    salaire_min_souhaite INT,
+    cv_path VARCHAR(500),
+    linkedin_url VARCHAR(255),
+    date_maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (id_utilisateur)
+        REFERENCES app.utilisateurs(id_utilisateur)
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE app.user_skill (
+    id_user_skill SERIAL PRIMARY KEY,
+    id_profil INT NOT NULL,
+    nom_competence VARCHAR(100) NOT NULL,
+    niveau VARCHAR(50) NOT NULL,
+    categorie VARCHAR(50) NOT NULL,
+
+    FOREIGN KEY (id_profil)
+        REFERENCES app.candidate_profile(id_profil)
+        ON DELETE CASCADE
+);

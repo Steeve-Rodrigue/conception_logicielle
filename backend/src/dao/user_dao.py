@@ -23,12 +23,11 @@ class UserDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        INSERT INTO user_account (
+                        INSERT INTO utilisateurs (
                             email, pseudo, mot_de_passe_hash, nom, prenom,
-                            telephone, date_creation, est_actif
+                            telephone, date_creation
                         ) VALUES (
-                            %(email)s, %(pseudo)s, %(mot_de_passe_hash)s, %(nom)s, %(prenom)s,
-                            %(telephone)s,, %(date_creation)s, %(est_actif)s
+                            %(email)s, %(pseudo)s, %(mot_de_passe_hash)s, %(nom)s, %(prenom)s, %(date_creation)s,
                         ) RETURNING id_utilisateur;
                         """,
                         {
@@ -37,9 +36,7 @@ class UserDao(metaclass=Singleton):
                             "mot_de_passe_hash": user.mot_de_passe_hash,
                             "nom": user.nom,
                             "prenom": user.prenom,
-                            "telephone": user.telephone,
                             "date_creation": user.date_creation,
-                            "est_actif": user.est_actif,
                         },
                     )
                     res = cursor.fetchone()
@@ -56,7 +53,7 @@ class UserDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT * FROM user_account WHERE email = %(email)s;",
+                        "SELECT * FROM utilisateurs WHERE email = %(email)s;",
                         {"email": email},
                     )
                     res = cursor.fetchone()
@@ -72,7 +69,7 @@ class UserDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT * FROM user_account WHERE pseudo = %(pseudo)s;",
+                        "SELECT * FROM utilisateurs WHERE pseudo = %(pseudo)s;",
                         {"pseudo": pseudo},
                     )
                     res = cursor.fetchone()
@@ -88,7 +85,7 @@ class UserDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT * FROM user_account WHERE id_utilisateur = %(id)s;",
+                        "SELECT * FROM utilisateurs WHERE id_utilisateur = %(id)s;",
                         {"id": id_utilisateur},
                     )
                     res = cursor.fetchone()
@@ -105,14 +102,12 @@ class UserDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        UPDATE user_account SET
+                        UPDATE utilisateurs SET
                             email = %(email)s,
                             pseudo = %(pseudo)s,
                             mot_de_passe_hash = %(mot_de_passe_hash)s,
                             nom = %(nom)s,
-                            prenom = %(prenom)s,
-                            telephone = %(telephone)s,
-                            est_actif = %(est_actif)s
+                            prenom = %(prenom)s
                         WHERE id_utilisateur = %(id_utilisateur)s;
                         """,
                         {
@@ -121,8 +116,6 @@ class UserDao(metaclass=Singleton):
                             "mot_de_passe_hash": user.mot_de_passe_hash,
                             "nom": user.nom,
                             "prenom": user.prenom,
-                            "telephone": user.telephone,
-                            "est_actif": user.est_actif,
                             "id_utilisateur": user.id_utilisateur,
                         },
                     )
@@ -137,7 +130,7 @@ class UserDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "DELETE FROM user_account WHERE id_utilisateur = %(id)s;",
+                        "DELETE FROM utilisateurs WHERE id_utilisateur = %(id)s;",
                         {"id": id_utilisateur},
                     )
                     return cursor.rowcount > 0
@@ -152,7 +145,7 @@ class UserDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        UPDATE user_account 
+                        UPDATE utilisateurs
                         SET date_derniere_connexion = CURRENT_TIMESTAMP
                         WHERE id_utilisateur = %(id)s;
                         """,
@@ -172,8 +165,6 @@ class UserDao(metaclass=Singleton):
             mot_de_passe_hash=row["mot_de_passe_hash"],
             nom=row["nom"],
             prenom=row["prenom"],
-            telephone=row["telephone"],
             date_creation=row["date_creation"],
             date_derniere_connexion=row.get("date_derniere_connexion"),
-            est_actif=row["est_actif"],
         )
