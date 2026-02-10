@@ -14,21 +14,21 @@ from typing import Optional
 from jose import jwt, JWTError
 from dotenv import load_dotenv
 
-from backend.src.business_object.user_service import UtilisateurService
-from backend.src.utils.security import verify_password
+from services.user_service import UserService
+from utils.security import verify_password
 
-# Charger les variables d'environnement
+
 load_dotenv()
 
-# Configuration JWT
+
 JWT_SECRET = os.getenv("JWT_SECRET", "votre_secret_par_defaut")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_SECONDS = int(os.getenv("ACCESS_TOKEN_EXPIRE_SECONDS", "3600"))
 
-utilisateur_service = UtilisateurService()
+user_service = UserService()
 
 
-def sign_jwt(utilisateur_id: int, est_admin: bool) -> dict:
+def sign_jwt(id_utilisateur: int) -> dict:
     """
     Crée un token JWT pour un utilisateur.
 
@@ -36,10 +36,8 @@ def sign_jwt(utilisateur_id: int, est_admin: bool) -> dict:
 
     Parameters
     ----------
-    utilisateur_id : int
+    id_utilisateur : int
         ID de l'utilisateur connecté
-    est_admin : bool
-        True si l'utilisateur est admin
 
     Returns
     -------
@@ -49,14 +47,13 @@ def sign_jwt(utilisateur_id: int, est_admin: bool) -> dict:
             "token_type": "bearer"
         }
     """
-    # Données à mettre dans le token
+    
     payload = {
-        "utilisateur_id": utilisateur_id,
-        "est_admin": est_admin,
+        "id_utilisateur": id_utilisateur,
         "exp": datetime.utcnow() + timedelta(seconds=ACCESS_TOKEN_EXPIRE_SECONDS),
     }
 
-    # Créer le token signé
+    
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
     return {"access_token": token, "token_type": "bearer"}
@@ -79,13 +76,13 @@ def decode_jwt(token: str) -> Optional[dict]:
     Example
     -------
     decoded = decode_jwt(token)
-    # {"utilisateur_id": 1, "est_admin": False, "exp": 1234567890}
+    # {"id_utilisateur": 1, "exp": 1234567890}
     """
     try:
-        # Décoder le token
+       
         decoded = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
 
-        # Vérifier l'expiration
+       
         if (
             decoded.get("exp")
             and datetime.utcfromtimestamp(decoded["exp"]) < datetime.utcnow()
@@ -98,19 +95,18 @@ def decode_jwt(token: str) -> Optional[dict]:
         return None
 
 
-def check_utilisateur(login: str, mot_de_passe: str) -> Optional[int]:
+def check_utilisateur(email: str, mdp: str) -> Optional[int]:
     """
-    Vérifie le login et mot de passe d'un utilisateur.
+    Vérifie l'email et mot de passe d'un utilisateur.
 
     Utilisée lors de la connexion pour valider les credentials.
 
     Parameters
     ----------
-    login : str
-        Le login de l'utilisateur
-    mot_de_passe : str
+    email : str
+        L'email de l'utilisateur
+    mdp : str
         Le mot de passe en clair
-
 
     Returns
     -------
@@ -118,19 +114,14 @@ def check_utilisateur(login: str, mot_de_passe: str) -> Optional[int]:
         L'ID de l'utilisateur si les credentials sont corrects, None sinon
     """
     try:
-        # Chercher l'utilisateur par son login
-        utilisateur = utilisateur_service.get_utilisateur_par_login(login)
+        
+        utilisateur = user_service.se_connecter(email, mdp)
 
         if not utilisateur:
-            print(f"Login '{login}' introuvable")
+            print(f"Email '{email}' introuvable ou mot de passe incorrect")
             return None
 
-        # Vérifier le mot de passe
-        if not verify_password(mot_de_passe, utilisateur.mot_de_passe):
-            print(f"Mot de passe incorrect pour '{login}'")
-            return None
-
-        print(f"✅ Connexion réussie pour '{login}' (ID: {utilisateur.id_utilisateur})")
+        print(f"✅ Connexion réussie pour '{email}' (ID: {utilisateur.id_utilisateur})")
         return utilisateur.id_utilisateur
 
     except Exception as e:
@@ -154,52 +145,34 @@ def get_utilisateur_from_token(token: str) -> Optional[dict]:
     dict or None
         {
             "id_utilisateur": 1,
-            "login": "admin",
-            "est_admin": True
+            "email": "user@example.com",
+            "pseudo": "username",
+            "nom": "Nom",
+            "prenom": "Prenom"
         }
     """
-    # Décoder le token
+    
     decoded = decode_jwt(token)
 
     if not decoded:
         return None
 
-    utilisateur_id = decoded.get("utilisateur_id")
+    id_utilisateur = decoded.get("id_utilisateur")
 
-    if not utilisateur_id:
+    if not id_utilisateur:
         return None
 
-    # Récupérer l'utilisateur depuis la base
-    utilisateur = utilisateur_service.get_utilisateur_par_id(utilisateur_id)
+    
+    utilisateur = user_service.user_dao.trouver_par_id(id_utilisateur)
 
     if not utilisateur:
         return None
 
-    # Retourner les infos publiques
+    
     return {
         "id_utilisateur": utilisateur.id_utilisateur,
-        "login": utilisateur.login,
-        "est_admin": utilisateur.est_admin,
+        "email": utilisateur.email,
+        "pseudo": utilisateur.pseudo,
+        "nom": utilisateur.nom,
+        "prenom": utilisateur.prenom,
     }
-
-
-def verify_admin(token: str) -> bool:
-    """
-    Vérifie si le token appartient à un admin.
-
-    Parameters
-    ----------
-    token : str
-        Le token JWT
-
-    Returns
-    -------
-    bool
-        True si admin, False sinon
-    """
-    decoded = decode_jwt(token)
-
-    if not decoded:
-        return False
-
-    return decoded.get("est_admin", False)
