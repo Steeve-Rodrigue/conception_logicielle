@@ -9,7 +9,7 @@ Ce fichier contient 2 classes pour protéger les routes :
 from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from backend.auth.auth_handler import decode_jwt, verify_admin
+from backend.src.auth.auth_handler import decode_jwt, verify_admin
 
 
 class JWTBearer(HTTPBearer):
