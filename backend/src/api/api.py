@@ -1,11 +1,10 @@
 """API Backend avec authentification JWT."""
-
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from backend.src.router import authentification
+from ..router import authentification
 
 load_dotenv()
 
@@ -40,7 +39,6 @@ async def health():
 
 if __name__ == "__main__":
     import uvicorn
-
     print(f"🚀 API sur http://{API_HOST}:{API_PORT}")
     print(f"📚 Docs sur http://{API_HOST}:{API_PORT}/docs")
     uvicorn.run(app, host=API_HOST, port=API_PORT, reload=True)
