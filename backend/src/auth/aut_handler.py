@@ -73,10 +73,7 @@ def decode_jwt(token: str) -> Optional[dict]:
     dict or None
         Les données du token si valide, None sinon
 
-    Example
-    -------
-    decoded = decode_jwt(token)
-    # {"id_utilisateur": 1, "exp": 1234567890}
+    
     """
     try:
        
@@ -110,8 +107,7 @@ def check_utilisateur(email: str, mdp: str) -> Optional[int]:
 
     Returns
     -------
-    int or None
-        L'ID de l'utilisateur si les credentials sont corrects, None sinon
+      L'ID de l'utilisateur si les credentials sont corrects, None sinon
     """
     try:
         
