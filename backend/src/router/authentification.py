@@ -10,13 +10,13 @@ from typing import Dict, Any
 from fastapi import APIRouter, HTTPException, Depends, status
 from pydantic import BaseModel, Field, EmailStr, field_validator
 
-from backend.auth.auth_handler import (
+from auth.auth_handler import (
     check_utilisateur,
     sign_jwt,
     get_utilisateur_from_token,
 )
-from backend.auth.auth_bearer import JWTBearer
-from backend.utilisateur_service import UtilisateurService
+from auth.auth_bearer import JWTBearer
+from services.user_service import UserService
 
 
 router = APIRouter(
@@ -29,11 +29,11 @@ class LoginRequest(BaseModel):
     """Modèle pour les informations de connexion."""
 
     email: EmailStr = Field(..., description="Email de l'utilisateur")
-    mot_de_passe: str = Field(..., description="Mot de passe", min_length=6)
+    mdp: str = Field(..., description="Mot de passe", min_length=6)
 
     model_config = {
         "json_schema_extra": {
-            "example": {"email": "admin@ensai.fr", "mot_de_passe": "Admin123!"}
+            "example": {"email": "admin@ensai.fr", "mdp": "Admin123!"}
         }
     }
 
@@ -42,18 +42,19 @@ class SignupRequest(BaseModel):
     """Modèle pour l'inscription d'un nouvel utilisateur."""
 
     email: EmailStr = Field(..., description="Email de l'utilisateur")
-    mot_de_passe: str = Field(..., description="Mot de passe", min_length=6)
-    confirmation_mot_de_passe: str = Field(
+    pseudo: str = Field(..., description="Pseudo de l'utilisateur", min_length=3)
+    mdp: str = Field(..., description="Mot de passe", min_length=6)
+    confirmation_mdp: str = Field(
         ..., description="Confirmation du mot de passe"
     )
-    nom: str = Field(None, description="Nom de famille (optionnel)")
-    prenom: str = Field(None, description="Prénom (optionnel)")
+    nom: str = Field(..., description="Nom de famille")
+    prenom: str = Field(..., description="Prénom")
 
-    @field_validator("confirmation_mot_de_passe")
+    @field_validator("confirmation_mdp")
     @classmethod
     def passwords_match(cls, v, info):
         """Valide que les deux mots de passe correspondent."""
-        if "mot_de_passe" in info.data and v != info.data["mot_de_passe"]:
+        if "mdp" in info.data and v != info.data["mdp"]:
             raise ValueError("Les mots de passe ne correspondent pas")
         return v
 
@@ -61,8 +62,9 @@ class SignupRequest(BaseModel):
         "json_schema_extra": {
             "example": {
                 "email": "user@ensai.fr",
-                "mot_de_passe": "Test123!",
-                "confirmation_mot_de_passe": "Test123!",
+                "pseudo": "jean_dupont",
+                "mdp": "Test123!",
+                "confirmation_mdp": "Test123!",
                 "nom": "Dupont",
                 "prenom": "Jean",
             }
@@ -110,8 +112,9 @@ async def login(credentials: LoginRequest):
         Si les identifiants sont incorrects ou en cas d'erreur
     """
     try:
+        
         utilisateur_id = check_utilisateur(
-            email=credentials.email, mot_de_passe=credentials.mot_de_passe
+            email=credentials.email, mdp=credentials.mdp
         )
 
         if not utilisateur_id:
@@ -120,17 +123,17 @@ async def login(credentials: LoginRequest):
                 detail="Email ou mot de passe incorrect",
             )
 
-        utilisateur_service = UtilisateurService()
-        utilisateur = utilisateur_service.get_utilisateur_par_id(utilisateur_id)
+        
+        user_service = UserService()
+        utilisateur = user_service.user_dao.trouver_par_id(utilisateur_id)
 
         if not utilisateur:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Utilisateur non trouvé"
             )
 
-        token_data = sign_jwt(
-            utilisateur_id=utilisateur.id_utilisateur, est_admin=utilisateur.est_admin
-        )
+        
+        token_data = sign_jwt(utilisateur_id=utilisateur.id_utilisateur)
 
         return {
             "access_token": token_data["access_token"],
@@ -138,9 +141,9 @@ async def login(credentials: LoginRequest):
             "utilisateur": {
                 "id_utilisateur": utilisateur.id_utilisateur,
                 "email": utilisateur.email,
+                "pseudo": utilisateur.pseudo,
                 "nom": utilisateur.nom,
                 "prenom": utilisateur.prenom,
-                "est_admin": utilisateur.est_admin,
             },
         }
 
@@ -166,7 +169,7 @@ async def signup(user_data: SignupRequest):
     Parameters
     ----------
     user_data : SignupRequest
-        Informations d'inscription (email, mot de passe, confirmation, nom, prénom)
+        Informations d'inscription (email, pseudo, mot de passe, confirmation, nom, prénom)
 
     Returns
     -------
@@ -176,28 +179,28 @@ async def signup(user_data: SignupRequest):
     Raises
     ------
     HTTPException
-        Si l'email existe déjà ou si les données sont invalides
+        Si l'email ou le pseudo existe déjà ou si les données sont invalides
     """
-    utilisateur_service = UtilisateurService()
+    user_service = UserService()
 
     try:
-        utilisateur = utilisateur_service.creer_utilisateur(
+        # Créer l'utilisateur via UserService
+        utilisateur = user_service.creer_utilisateur(
             email=user_data.email,
-            mot_de_passe=user_data.mot_de_passe,
+            pseudo=user_data.pseudo,
+            mdp=user_data.mdp,
             nom=user_data.nom,
             prenom=user_data.prenom,
-            est_admin=False,
         )
 
         if not utilisateur:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Impossible de créer l'utilisateur (email déjà utilisé ?)",
+                detail="Impossible de créer l'utilisateur (email ou pseudo déjà utilisé, ou mot de passe invalide)",
             )
 
-        token_data = sign_jwt(
-            utilisateur_id=utilisateur.id_utilisateur, est_admin=utilisateur.est_admin
-        )
+      
+        token_data = sign_jwt(utilisateur_id=utilisateur.id_utilisateur)
 
         return {
             "access_token": token_data["access_token"],
@@ -205,9 +208,9 @@ async def signup(user_data: SignupRequest):
             "utilisateur": {
                 "id_utilisateur": utilisateur.id_utilisateur,
                 "email": utilisateur.email,
+                "pseudo": utilisateur.pseudo,
                 "nom": utilisateur.nom,
                 "prenom": utilisateur.prenom,
-                "est_admin": utilisateur.est_admin,
             },
         }
 
