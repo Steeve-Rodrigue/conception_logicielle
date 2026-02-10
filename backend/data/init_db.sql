@@ -18,7 +18,6 @@ CREATE TABLE app.utilisateurs (
     nom VARCHAR(100),
     prenom VARCHAR(100),
     mdp_hash VARCHAR(255) NOT NULL,
-    est_admin BOOLEAN DEFAULT FALSE,
     date_creation TIMESTAMP DEFAULT NOW(),
     date_derniere_connexion TIMESTAMP
 );
