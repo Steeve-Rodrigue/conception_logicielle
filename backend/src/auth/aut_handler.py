@@ -14,8 +14,8 @@ from typing import Optional
 from jose import jwt, JWTError
 from dotenv import load_dotenv
 
-from service.utilisateur_service import UtilisateurService
-from utils.security import verify_password
+from backend.utilisateur_service import UtilisateurService
+from backend.security import verify_password
 
 # Charger les variables d'environnement
 load_dotenv()
