@@ -15,15 +15,17 @@ CREATE SCHEMA app;
 CREATE TABLE app.utilisateurs (
     id_utilisateur SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    nom VARCHAR(100),
-    prenom VARCHAR(100),
+    pseudo VARCHAR(100) UNIQUE NOT NULL,
+    nom VARCHAR(100) NOT NULL,
+    prenom VARCHAR(100) NOT NULL,
     mdp_hash VARCHAR(255) NOT NULL,
     date_creation TIMESTAMP DEFAULT NOW(),
     date_derniere_connexion TIMESTAMP
 );
 
--- Index pour optimiser la recherche par email
+-- Index pour optimiser la recherche par email et pseudo
 CREATE INDEX idx_utilisateurs_email ON app.utilisateurs(email);
+CREATE INDEX idx_utilisateurs_pseudo ON app.utilisateurs(pseudo);
 
 
 CREATE TABLE app.candidate_profile (
