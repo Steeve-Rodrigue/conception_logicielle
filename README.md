@@ -1,5 +1,37 @@
 # Projet-Conception-logicielle
 
+## Backend API
+### Premières commandes
+```bash
+# Se placer dans le dossier backtend
+cd backend
+
+# Installer les dépendances
+uv sync
+
+# Lancer le serveur de développement
+uv run uvicorn src.api:app --reload 
+```
+
+
+
+## Frontend
+
+### Premières commandes
+```bash
+# Se placer dans le dossier frontend
+cd frontend
+
+# Installer les dépendances
+npm install
+
+# Lancer le serveur de développement
+npm run dev
+```
+
+
+
+
 ## Backend - Linting et formatage (Ruff)
 
 ### Installation de pre-commit
@@ -25,18 +57,4 @@ uv run pre-commit run --files src/*
 
 # Tous les fichiers du projet
 uv run pre-commit run --all-files
-```
-
-## Frontend
-
-### Premières commandes
-```bash
-# Se placer dans le dossier frontend
-cd frontend
-
-# Installer les dépendances
-npm install
-
-# Lancer le serveur de développement
-npm run dev
 ```

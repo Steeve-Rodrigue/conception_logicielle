@@ -1,7 +1,0 @@
-fastapi
-uvicorn[standard]
-python-jose[cryptography]
-python-dotenv
-passlib[bcrypt]
-pydantic[email]
-psycopg2-binary
