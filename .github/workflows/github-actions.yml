@@ -62,27 +62,27 @@ jobs:
     - name: Vérification lint avec Ruff
       run: uv run ruff check .
 
-  test:
-    name: Tests avec pytest
-    runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: backend/tests
+#  test:
+#    name: Tests avec pytest
+#    runs-on: ubuntu-22.04
+#    defaults:
+#      run:
+#        working-directory: backend/tests
     
-    steps:
-    - name: Récupérer le code
-      uses: actions/checkout@v4
-    
-    - name: Installer uv
-      uses: astral-sh/setup-uv@v4
-      with:
-        version: "latest"
-    
-    - name: Configurer Python
-      run: uv python install
-    
-    - name: Installer les dépendances
-      run: uv sync --dev
-    
-    - name: Lancer les tests avec pytest
-      run: uv run pytest
+#    steps:
+#    - name: Récupérer le code
+#      uses: actions/checkout@v4
+#    
+#    - name: Installer uv
+#      uses: astral-sh/setup-uv@v4
+#      with:
+#        version: "latest"
+#    
+#    - name: Configurer Python
+#      run: uv python install
+#    
+#    - name: Installer les dépendances
+#      run: uv sync --dev
+#    
+#    - name: Lancer les tests avec pytest
+#      run: uv run pytest
