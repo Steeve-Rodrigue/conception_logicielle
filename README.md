@@ -32,7 +32,7 @@ npm run dev
 
 
 
-## Backend - Linting et formatage (Ruff)
+## Backend - Linting et formatage (Ruff) (Pour developeur)
 
 ### Installation de pre-commit
 ```bash
