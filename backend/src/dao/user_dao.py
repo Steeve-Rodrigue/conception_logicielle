@@ -1,9 +1,9 @@
 import logging
 from typing import Optional
 
-from business_object.user import User
-from dao.db_connection import DBConnection
-from utils.singleton import Singleton
+from src.business_object.user import User
+from src.dao.db_connection import DBConnection
+from src.utils.singleton import Singleton
 
 
 class UserDao(metaclass=Singleton):

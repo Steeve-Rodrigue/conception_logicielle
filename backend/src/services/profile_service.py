@@ -1,10 +1,10 @@
 import logging
 from typing import Optional, List
 
-from business_object.candidate_profile import CandidateProfile
-from business_object.user_skill import UserSkill
-from dao.profile_dao import ProfileDao
-from dao.skill_dao import SkillDao
+from src.business_object.candidate_profile import CandidateProfile
+from src.business_object.user_skill import UserSkill
+from src.dao.profile_dao import ProfileDao
+from src.dao.skill_dao import SkillDao
 
 
 class ProfileService:

@@ -15,8 +15,8 @@ from jose import jwt, JWTError
 from dotenv import load_dotenv
 
 
-from services.user_service import UserService
-from utils.security import verify_password
+from src.services.user_service import UserService
+from src.utils.security import verify_password
 
 load_dotenv()
 

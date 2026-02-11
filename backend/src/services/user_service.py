@@ -2,10 +2,10 @@ import logging
 from typing import Optional
 from datetime import datetime, date, timedelta
 
-from business_object.user import User
-from dao.user_dao import UserDao
-from services.profile_service import ProfileService
-from utils.security import hash_password, verify_password, validate_password_strength
+from src.business_object.user import User
+from src.dao.user_dao import UserDao
+from src.services.profile_service import ProfileService
+from src.utils.security import hash_password, verify_password, validate_password_strength
 
 
 class UserService:

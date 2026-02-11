@@ -9,8 +9,8 @@ if str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 from dotenv import load_dotenv
-from utils.singleton import Singleton
-from dao.db_connection import DBConnection
+from src.utils.singleton import Singleton
+from src.dao.db_connection import DBConnection
 
 env_path = Path(__file__).resolve().parents[2] / ".env"
 load_dotenv(dotenv_path=env_path)

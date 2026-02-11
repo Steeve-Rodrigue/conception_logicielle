@@ -10,13 +10,13 @@ from typing import Dict, Any
 from fastapi import APIRouter, HTTPException, Depends, status
 from pydantic import BaseModel, Field, EmailStr, field_validator
 
-from auth.auth_handler import (
+from src.auth.auth_handler import (
     check_utilisateur,
     sign_jwt,
     get_utilisateur_from_token,
 )
-from auth.auth_bearer import JWTBearer
-from services.user_service import UserService
+from src.auth.auth_bearer import JWTBearer
+from src.services.user_service import UserService
 
 
 router = APIRouter(

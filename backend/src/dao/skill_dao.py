@@ -1,9 +1,9 @@
 import logging
 from typing import List
 
-from business_object.user_skill import UserSkill
-from dao.db_connection import DBConnection
-from utils.singleton import Singleton
+from src.business_object.user_skill import UserSkill
+from src.dao.db_connection import DBConnection
+from src.utils.singleton import Singleton
 
 
 class SkillDao(metaclass=Singleton):
