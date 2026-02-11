@@ -1,0 +1,12 @@
+# .pre-commit-config.yaml
+
+repos:
+  # -------------------------------------
+  # REMOTE HOOKS: Community maintained
+  # -------------------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.14
+    hooks:
+      - id: ruff-format      # Auto-format
+      - id: ruff-check       # Lint and check
+
