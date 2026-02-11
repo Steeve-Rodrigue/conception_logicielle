@@ -16,7 +16,6 @@ from dotenv import load_dotenv
 
 
 from src.services.user_service import UserService
-from src.utils.security import verify_password
 
 load_dotenv()
 
@@ -47,13 +46,12 @@ def sign_jwt(id_utilisateur: int) -> dict:
             "token_type": "bearer"
         }
     """
-    
+
     payload = {
         "id_utilisateur": id_utilisateur,
         "exp": datetime.utcnow() + timedelta(seconds=ACCESS_TOKEN_EXPIRE_SECONDS),
     }
 
-    
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
     return {"access_token": token, "token_type": "bearer"}
@@ -73,13 +71,11 @@ def decode_jwt(token: str) -> Optional[dict]:
     dict or None
         Les données du token si valide, None sinon
 
-    
+
     """
     try:
-       
         decoded = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
 
-       
         if (
             decoded.get("exp")
             and datetime.utcfromtimestamp(decoded["exp"]) < datetime.utcnow()
@@ -110,7 +106,6 @@ def check_utilisateur(email: str, mdp: str) -> Optional[int]:
       L'ID de l'utilisateur si les credentials sont corrects, None sinon
     """
     try:
-        
         utilisateur = user_service.se_connecter(email, mdp)
 
         if not utilisateur:
@@ -147,7 +142,7 @@ def get_utilisateur_from_token(token: str) -> Optional[dict]:
             "prenom": "Prenom"
         }
     """
-    
+
     decoded = decode_jwt(token)
 
     if not decoded:
@@ -158,13 +153,11 @@ def get_utilisateur_from_token(token: str) -> Optional[dict]:
     if not id_utilisateur:
         return None
 
-    
     utilisateur = user_service.user_dao.trouver_par_id(id_utilisateur)
 
     if not utilisateur:
         return None
 
-    
     return {
         "id_utilisateur": utilisateur.id_utilisateur,
         "email": utilisateur.email,

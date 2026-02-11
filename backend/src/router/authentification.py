@@ -44,9 +44,7 @@ class SignupRequest(BaseModel):
     email: EmailStr = Field(..., description="Email de l'utilisateur")
     pseudo: str = Field(..., description="Pseudo de l'utilisateur", min_length=3)
     mdp: str = Field(..., description="Mot de passe", min_length=6)
-    confirmation_mdp: str = Field(
-        ..., description="Confirmation du mot de passe"
-    )
+    confirmation_mdp: str = Field(..., description="Confirmation du mot de passe")
     nom: str = Field(..., description="Nom de famille")
     prenom: str = Field(..., description="Prénom")
 
@@ -112,10 +110,7 @@ async def login(credentials: LoginRequest):
         Si les identifiants sont incorrects ou en cas d'erreur
     """
     try:
-        
-        utilisateur_id = check_utilisateur(
-            email=credentials.email, mdp=credentials.mdp
-        )
+        utilisateur_id = check_utilisateur(email=credentials.email, mdp=credentials.mdp)
 
         if not utilisateur_id:
             raise HTTPException(
@@ -123,7 +118,6 @@ async def login(credentials: LoginRequest):
                 detail="Email ou mot de passe incorrect",
             )
 
-        
         user_service = UserService()
         utilisateur = user_service.user_dao.trouver_par_id(utilisateur_id)
 
@@ -132,7 +126,6 @@ async def login(credentials: LoginRequest):
                 status_code=status.HTTP_404_NOT_FOUND, detail="Utilisateur non trouvé"
             )
 
-        
         token_data = sign_jwt(utilisateur_id=utilisateur.id_utilisateur)
 
         return {
@@ -199,7 +192,6 @@ async def signup(user_data: SignupRequest):
                 detail="Impossible de créer l'utilisateur (email ou pseudo déjà utilisé, ou mot de passe invalide)",
             )
 
-      
         token_data = sign_jwt(utilisateur_id=utilisateur.id_utilisateur)
 
         return {

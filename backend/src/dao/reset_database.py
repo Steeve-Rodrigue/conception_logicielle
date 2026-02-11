@@ -1,16 +1,16 @@
 """Script de réinitialisation de la base de données."""
 
 import sys
-import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+from src.utils.singleton import Singleton
+from src.dao.db_connection import DBConnection
 
 src_path = Path(__file__).resolve().parent.parent
 if str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from dotenv import load_dotenv
-from src.utils.singleton import Singleton
-from src.dao.db_connection import DBConnection
 
 env_path = Path(__file__).resolve().parents[2] / ".env"
 load_dotenv(dotenv_path=env_path)
@@ -38,7 +38,7 @@ class ResetDatabase(metaclass=Singleton):
             print(f"📁 Lecture de {init_db_path}")
             with open(init_db_path, encoding="utf-8") as f:
                 init_sql = f.read()
-            
+
             print(f"📁 Lecture de {pop_db_path}")
             with open(pop_db_path, encoding="utf-8") as f:
                 pop_sql = f.read()
@@ -48,7 +48,9 @@ class ResetDatabase(metaclass=Singleton):
                     init_queries = [q.strip() for q in init_sql.split(";") if q.strip()]
                     pop_queries = [q.strip() for q in pop_sql.split(";") if q.strip()]
 
-                    print(f"🔧 Exécution de {len(init_queries)} requêtes d'initialisation...")
+                    print(
+                        f"🔧 Exécution de {len(init_queries)} requêtes d'initialisation..."
+                    )
                     for i, query in enumerate(init_queries, 1):
                         try:
                             cursor.execute(query)
@@ -57,7 +59,9 @@ class ResetDatabase(metaclass=Singleton):
                             print(f"   ✗ Erreur requête {i}: {e}")
                             raise
 
-                    print(f"📊 Exécution de {len(pop_queries)} requêtes de population...")
+                    print(
+                        f"📊 Exécution de {len(pop_queries)} requêtes de population..."
+                    )
                     for i, query in enumerate(pop_queries, 1):
                         try:
                             cursor.execute(query)

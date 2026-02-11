@@ -5,7 +5,11 @@ from datetime import datetime, date, timedelta
 from src.business_object.user import User
 from src.dao.user_dao import UserDao
 from src.services.profile_service import ProfileService
-from src.utils.security import hash_password, verify_password, validate_password_strength
+from src.utils.security import (
+    hash_password,
+    verify_password,
+    validate_password_strength,
+)
 
 
 class UserService:
@@ -32,7 +36,7 @@ class UserService:
         user_temp = User(
             email=email,
             pseudo=pseudo,
-            mot_de_passe_hash="",
+            mdp_hash="",
             nom=nom,
             prenom=prenom,
         )
@@ -54,13 +58,13 @@ class UserService:
             return None
 
         # Hashage du mot de passe
-        mdp_hash = hash_password(mdp)
+        mot_de_passe_hash = hash_password(mdp)
 
         # Création de l'utilisateur
         user = User(
             email=email,
             pseudo=pseudo,
-            mot_de_passe_hash=mdp_hash,
+            mdp_hash=mot_de_passe_hash,
             nom=nom,
             prenom=prenom,
             date_creation=datetime.now(),

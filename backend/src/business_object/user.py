@@ -29,12 +29,12 @@ class User:
 
     def __init__(
         self,
-        id_utilisateur: int,
         email: str,
         pseudo: str,
         mdp_hash: str,
         nom: str,
         prenom: str,
+        id_utilisateur: Optional[int] = None,
         date_creation: Optional[datetime] = None,
         date_derniere_connexion: Optional[datetime] = None,
     ):
