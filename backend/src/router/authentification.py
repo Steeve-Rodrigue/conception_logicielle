@@ -126,7 +126,7 @@ async def login(credentials: LoginRequest):
                 status_code=status.HTTP_404_NOT_FOUND, detail="Utilisateur non trouvé"
             )
 
-        token_data = sign_jwt(utilisateur_id=utilisateur.id_utilisateur)
+        token_data = sign_jwt(id_utilisateur=utilisateur.id_utilisateur)
 
         return {
             "access_token": token_data["access_token"],
@@ -192,7 +192,7 @@ async def signup(user_data: SignupRequest):
                 detail="Impossible de créer l'utilisateur (email ou pseudo déjà utilisé, ou mot de passe invalide)",
             )
 
-        token_data = sign_jwt(utilisateur_id=utilisateur.id_utilisateur)
+        token_data = sign_jwt(id_utilisateur=utilisateur.id_utilisateur)
 
         return {
             "access_token": token_data["access_token"],

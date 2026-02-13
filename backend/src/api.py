@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from src.router import authentification
+from src.router import job
 
 load_dotenv()
 
@@ -26,6 +27,7 @@ app.add_middleware(
 )
 
 app.include_router(authentification.router)
+app.include_router(job.router)
 
 
 @app.get("/")

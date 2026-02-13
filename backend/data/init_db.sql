@@ -57,3 +57,20 @@ CREATE TABLE app.user_skill (
         REFERENCES app.candidate_profile(id_profil)
         ON DELETE CASCADE
 );
+
+CREATE TABLE app.job_offer (
+    id_offre SERIAL PRIMARY KEY,
+    external_id VARCHAR(100) UNIQUE NOT NULL,
+    titre VARCHAR(255) NOT NULL,
+    entreprise VARCHAR(255) NOT NULL,
+    description TEXT,
+    localisation VARCHAR(255),
+    type_contrat VARCHAR(50),
+    salaire VARCHAR(100),
+    competences_requises TEXT[],
+    date_publication TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    url_origine VARCHAR(500),
+    source VARCHAR(50) DEFAULT 'france_travail',
+    est_active BOOLEAN DEFAULT TRUE,
+    date_maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

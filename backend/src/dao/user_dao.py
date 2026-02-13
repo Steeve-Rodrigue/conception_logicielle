@@ -24,16 +24,15 @@ class UserDao(metaclass=Singleton):
                     cursor.execute(
                         """
                         INSERT INTO utilisateurs (
-                            email, pseudo, mot_de_passe_hash, nom, prenom,
-                            telephone, date_creation
+                            email, pseudo, mdp_hash, nom, prenom, date_creation
                         ) VALUES (
-                            %(email)s, %(pseudo)s, %(mot_de_passe_hash)s, %(nom)s, %(prenom)s, %(date_creation)s,
+                            %(email)s, %(pseudo)s, %(mdp_hash)s, %(nom)s, %(prenom)s, %(date_creation)s
                         ) RETURNING id_utilisateur;
                         """,
                         {
                             "email": user.email,
                             "pseudo": user.pseudo,
-                            "mot_de_passe_hash": user.mot_de_passe_hash,
+                            "mdp_hash": user.mdp_hash,
                             "nom": user.nom,
                             "prenom": user.prenom,
                             "date_creation": user.date_creation,
@@ -105,7 +104,7 @@ class UserDao(metaclass=Singleton):
                         UPDATE utilisateurs SET
                             email = %(email)s,
                             pseudo = %(pseudo)s,
-                            mot_de_passe_hash = %(mot_de_passe_hash)s,
+                            mdp_hash = %(mdp_hash)s,
                             nom = %(nom)s,
                             prenom = %(prenom)s
                         WHERE id_utilisateur = %(id_utilisateur)s;
@@ -113,7 +112,7 @@ class UserDao(metaclass=Singleton):
                         {
                             "email": user.email,
                             "pseudo": user.pseudo,
-                            "mot_de_passe_hash": user.mot_de_passe_hash,
+                            "mdp_hash": user.mdp_hash,
                             "nom": user.nom,
                             "prenom": user.prenom,
                             "id_utilisateur": user.id_utilisateur,
@@ -156,13 +155,13 @@ class UserDao(metaclass=Singleton):
             logging.error(f"Erreur MAJ dernière connexion: {e}")
         return False
 
-    def _row_to_user(row: dict) -> User:
+    def _row_to_user(self, row: dict) -> User:
         """Convertit une ligne SQL en objet User"""
         return User(
             id_utilisateur=row["id_utilisateur"],
             email=row["email"],
             pseudo=row["pseudo"],
-            mot_de_passe_hash=row["mot_de_passe_hash"],
+            mdp_hash=row["mdp_hash"],
             nom=row["nom"],
             prenom=row["prenom"],
             date_creation=row["date_creation"],

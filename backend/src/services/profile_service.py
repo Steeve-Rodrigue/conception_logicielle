@@ -1,4 +1,5 @@
 import logging
+from datetime import date
 from typing import Optional, List
 
 from src.business_object.candidate_profile import CandidateProfile
@@ -20,36 +21,37 @@ class ProfileService:
         self,
         id_utilisateur: int,
         titre_professionnel: str,
-        annees_experience: int = 0,
-        disponibilite: str = "Immédiate",
-        type_contrat_recherche: str = "CDI",
-        **kwargs,
+        annees_experience: int,
+        date_disponibilite: date,
+        type_contrat_recherche: str,
+        salaire_min_souhaite: Optional[int] = None,
+        cv_path: Optional[str] = None,
+        linkedin_url: Optional[str] = None,
     ) -> Optional[CandidateProfile]:
         """
         Crée un profil candidat.
         """
 
-        # Création de l'objet Business
-        profile = CandidateProfile(
-            id_utilisateur=id_utilisateur,
-            titre_professionnel=titre_professionnel,
-            annees_experience=annees_experience,
-            disponibilite=disponibilite,
-            type_contrat_recherche=type_contrat_recherche,
-            **kwargs,
-        )
-
-        # Validation
-        if annees_experience < 0:
-            logging.error("Années d'expérience invalides")
+        try:
+            profile = CandidateProfile(
+                id_utilisateur=id_utilisateur,
+                titre_professionnel=titre_professionnel,
+                annees_experience=annees_experience,
+                date_disponibilite=date_disponibilite,
+                type_contrat_recherche=type_contrat_recherche,
+                salaire_min_souhaite=salaire_min_souhaite,
+                cv_path=cv_path,
+                linkedin_url=linkedin_url,
+            )
+        except ValueError as e:
+            logging.error(f"Erreur métier lors de la création du profil : {e}")
             return None
 
-        # Persistance via DAO
         if self.profile_dao.creer_profil(profile):
             logging.info(f"Profil créé pour utilisateur {id_utilisateur}")
             return profile
 
-        logging.error("Échec création profil")
+        logging.error("Échec création profil en base de données")
         return None
 
     def obtenir_profil_utilisateur(
@@ -58,34 +60,64 @@ class ProfileService:
         """Récupère le profil d'un utilisateur"""
         return self.profile_dao.obtenir_profil_par_utilisateur(id_utilisateur)
 
-    def mettre_a_jour_profil(self, id_utilisateur: int, **kwargs) -> bool:
+    def mettre_a_jour_profil(
+        self,
+        id_utilisateur: int,
+        titre_professionnel: Optional[str] = None,
+        annees_experience: Optional[int] = None,
+        date_disponibilite: Optional[date] = None,
+        type_contrat_recherche: Optional[str] = None,
+        salaire_min_souhaite: Optional[int] = None,
+        cv_path: Optional[str] = None,
+        linkedin_url: Optional[str] = None,
+    ) -> bool:
         """
         Met à jour le profil d'un utilisateur.
         """
-        # Récupération du profil existant
+
         profile = self.profile_dao.obtenir_profil_par_utilisateur(id_utilisateur)
+
         if not profile:
             logging.error(f"Profil introuvable pour utilisateur {id_utilisateur}")
             return False
 
-        # Mise à jour des champs fournis
-        for key, value in kwargs.items():
-            if hasattr(profile, key):
-                setattr(profile, key, value)
+        try:
+            if titre_professionnel is not None:
+                profile.titre_professionnel = titre_professionnel
 
-        # Persistance
+            if annees_experience is not None:
+                profile.annees_experience = annees_experience
+
+            if date_disponibilite is not None:
+                profile.date_disponibilite = date_disponibilite
+
+            if type_contrat_recherche is not None:
+                profile.type_contrat_recherche = type_contrat_recherche
+
+            if salaire_min_souhaite is not None:
+                profile.salaire_min_souhaite = salaire_min_souhaite
+
+            if cv_path is not None:
+                profile.cv_path = cv_path
+
+            if linkedin_url is not None:
+                profile.linkedin_url = linkedin_url
+
+            profile._valider_donnees_metier()
+
+        except ValueError as e:
+            logging.error(f"Erreur métier lors de la mise à jour : {e}")
+            return False
+
         return self.profile_dao.mettre_a_jour_profil(profile)
 
     def ajouter_competence(
         self, id_profil: int, nom_competence: str, niveau: str, categorie: str
     ) -> bool:
-        """Ajoute une compétence au profil"""
-        # Vérification doublon
         if self.skill_dao.competence_existe(id_profil, nom_competence):
             logging.warning(f"Compétence '{nom_competence}' déjà présente")
             return False
 
-        # Création de l'objet UserSkill
         skill = UserSkill(
             id_profil=id_profil,
             nom_competence=nom_competence,
@@ -93,18 +125,14 @@ class ProfileService:
             categorie=categorie,
         )
 
-        # Validation
         if not skill.valider_niveau():
             logging.error(f"Niveau invalide: {niveau}")
             return False
 
-        # Persistance
         return self.skill_dao.ajouter_competence(skill)
 
     def lister_competences(self, id_profil: int) -> List[UserSkill]:
-        """Liste toutes les compétences d'un profil"""
         return self.skill_dao.lister_competences_utilisateur(id_profil)
 
     def supprimer_competence(self, id_user_skill: int) -> bool:
-        """Supprime une compétence"""
         return self.skill_dao.supprimer_competence(id_user_skill)

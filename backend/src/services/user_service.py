@@ -58,13 +58,13 @@ class UserService:
             return None
 
         # Hashage du mot de passe
-        mot_de_passe_hash = hash_password(mdp)
+        mdp_hash = hash_password(mdp)
 
         # Création de l'utilisateur
         user = User(
             email=email,
             pseudo=pseudo,
-            mdp_hash=mot_de_passe_hash,
+            mdp_hash=mdp_hash,
             nom=nom,
             prenom=prenom,
             date_creation=datetime.now(),
@@ -115,9 +115,7 @@ class UserService:
         # Mise à jour des champs fournis
         if email and email != user.email:
             # Validation email
-            user_temp = User(
-                email=email, pseudo="temp", mot_de_passe_hash="", nom="", prenom=""
-            )
+            user_temp = User(email=email, pseudo="temp", mdp_hash="", nom="", prenom="")
             if not user_temp.valider_email():
                 logging.error(f"Email invalide: {email}")
                 return False
@@ -149,7 +147,7 @@ class UserService:
             return False
 
         # Vérification ancien mot de passe
-        if not verify_password(ancien_mdp, user.mot_de_passe_hash):
+        if not verify_password(ancien_mdp, user.mdp_hash):
             logging.error("Ancien mot de passe incorrect")
             return False
 

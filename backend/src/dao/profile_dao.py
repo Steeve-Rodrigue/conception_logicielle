@@ -20,11 +20,11 @@ class ProfileDao(metaclass=Singleton):
                         """
                         INSERT INTO candidate_profile (
                             id_utilisateur, titre_professionnel, annees_experience,
-                            disponibilite, type_contrat_recherche, salaire_min_souhaite,
+                            date_disponibilite, type_contrat_recherche, salaire_min_souhaite,
                             cv_path, linkedin_url
                         ) VALUES (
                             %(id_utilisateur)s, %(titre_professionnel)s, %(annees_experience)s,
-                            %(disponibilite)s, %(type_contrat_recherche)s, %(salaire_min_souhaite)s,
+                            %(date_disponibilite)s, %(type_contrat_recherche)s, %(salaire_min_souhaite)s,
                             %(cv_path)s, %(linkedin_url)s
                         ) RETURNING id_profil;
                         """,
@@ -32,7 +32,7 @@ class ProfileDao(metaclass=Singleton):
                             "id_utilisateur": profile.id_utilisateur,
                             "titre_professionnel": profile.titre_professionnel,
                             "annees_experience": profile.annees_experience,
-                            "disponibilite": profile.disponibilite,
+                            "date_disponibilite": profile.date_disponibilite,
                             "type_contrat_recherche": profile.type_contrat_recherche,
                             "salaire_min_souhaite": profile.salaire_min_souhaite,
                             "cv_path": profile.cv_path,
@@ -75,7 +75,7 @@ class ProfileDao(metaclass=Singleton):
                         UPDATE candidate_profile SET
                             titre_professionnel = %(titre_professionnel)s,
                             annees_experience = %(annees_experience)s,
-                            disponibilite = %(disponibilite)s,
+                            date_disponibilite = %(date_disponibilite)s,
                             type_contrat_recherche = %(type_contrat_recherche)s,
                             salaire_min_souhaite = %(salaire_min_souhaite)s,
                             cv_path = %(cv_path)s,
@@ -85,7 +85,7 @@ class ProfileDao(metaclass=Singleton):
                         {
                             "titre_professionnel": profile.titre_professionnel,
                             "annees_experience": profile.annees_experience,
-                            "disponibilite": profile.disponibilite,
+                            "date_disponibilite": profile.date_disponibilite,
                             "type_contrat_recherche": profile.type_contrat_recherche,
                             "salaire_min_souhaite": profile.salaire_min_souhaite,
                             "cv_path": profile.cv_path,
@@ -105,7 +105,7 @@ class ProfileDao(metaclass=Singleton):
             id_utilisateur=row["id_utilisateur"],
             titre_professionnel=row["titre_professionnel"],
             annees_experience=row["annees_experience"],
-            disponibilite=row["disponibilite"],
+            date_disponibilite=row["date_disponibilite"],
             type_contrat_recherche=row["type_contrat_recherche"],
             salaire_min_souhaite=row.get("salaire_min_souhaite"),
             cv_path=row.get("cv_path"),
