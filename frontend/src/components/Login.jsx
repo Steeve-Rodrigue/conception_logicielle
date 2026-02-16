@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useNavigate , Link } from "react-router-dom";
 import "../style/style.css";
-//import api from "../api";
+import api from "../api/api";
 
 
 function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  
+  const [email, setEmail] = useState("");
+  const [mdp, setMdp] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -19,19 +20,28 @@ function Login() {
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append("username", username);
-      formData.append("password", password);
-
-      const response = await api.post("/api/v1/auth/login", formData, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      });
+      const response = await api.post("/auth/login", {
+      email: email,
+      mdp: mdp,
+    });
 
       localStorage.setItem("token", response.data.access_token);
-      navigate("/welcome");
+      localStorage.setItem("utilisateur", JSON.stringify(response.data.utilisateur));
+
+      navigate("/Offres");
     } catch (err) {
-      setError(err.response?.data?.detail || "Erreur de connexion");
-    } finally {
+      const detail = err.response?.data?.detail;
+
+      if (typeof detail === "string") {
+        // Simple string error → display directly
+        setError(detail);
+      } else if (Array.isArray(detail)) {
+        // FastAPI validation error → extract the messages
+        setError(detail.map((e) => e.msg).join(", "));
+      } else {
+        setError("Erreur de connexion");
+      }
+} finally {
       setLoading(false);
     }
   };
@@ -52,7 +62,7 @@ function Login() {
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
           </div>
-          <h1 className="login-title">JOB SEARCH</h1>
+          <h1 className="login-title">JOBPILOT</h1>
           </div>
 
         <form onSubmit={handleSubmit} className="login-form">
@@ -68,7 +78,7 @@ function Login() {
                 id="email"
                 placeholder="votre@email.com"
                 //value={use}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 className="form-input"
                 required
               />
@@ -88,8 +98,8 @@ function Login() {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 placeholder="Entrer votre mot de passe"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={mdp}
+                onChange={(e) => setMdp(e.target.value)}
                 className="form-input"
                 required
               />
