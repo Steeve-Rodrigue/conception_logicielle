@@ -27,8 +27,8 @@ class JobAggregationService:
         logging.info(f" Synchronisation des offres : {mots_cles}")
 
         # Récupérer les offres de France Travail
-        offers = self.france_travail.rechercher_offres(
-            mots_cles=mots_cles, localisation=localisation
+        offers = self.france_travail.rechercher_toutes_offres(
+            mots_cles=mots_cles, departement=localisation
         )
 
         # Sauvegarder en BDD (UPSERT)

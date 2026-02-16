@@ -224,6 +224,7 @@ class FranceTravailService:
         return JobOffer(
             external_id=data.get("id"),
             titre=data.get("intitule", "Sans titre"),
+            salaire=data.get("salaire", {}).get("libelle", "Non renseigné"),
             entreprise=data.get("entreprise", {}).get("nom", "Non renseigné"),
             description=data.get("description", ""),
             localisation=data.get("lieuTravail", {}).get("libelle", "France"),
