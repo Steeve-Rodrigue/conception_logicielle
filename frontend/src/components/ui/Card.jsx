@@ -11,4 +11,3 @@ function Card({ className = "", ...props }) {
 }
 
 export default Card;
-

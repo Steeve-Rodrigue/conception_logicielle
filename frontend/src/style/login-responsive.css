@@ -1,0 +1,14 @@
+@media (max-width: 640px) {
+  .login-card {
+    padding: 2rem;
+  }
+
+  .login-title {
+    font-size: 1.875rem;
+  }
+
+  .bg-decoration {
+    width: 16rem;
+    height: 16rem;
+  }
+}

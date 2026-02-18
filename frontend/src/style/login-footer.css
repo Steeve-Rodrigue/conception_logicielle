@@ -1,0 +1,30 @@
+.signup-text {
+  text-align: center;
+  color: #4b5563;
+  font-size: 0.875rem;
+  margin-top: 2rem;
+  margin-bottom: 0;
+  animation: fadeIn 0.6s ease-out 0.8s both;
+}
+
+.signup-link {
+  color: #007bff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.signup-link:hover {
+  color: #374151;
+}
+
+.security-badge {
+  position: relative;
+  z-index: 10;
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  animation: fadeIn 0.6s ease-out 0.9s both;
+}

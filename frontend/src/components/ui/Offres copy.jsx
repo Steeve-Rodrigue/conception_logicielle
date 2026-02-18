@@ -11,7 +11,7 @@ function mapApiJobToUiJob(apiJob) {
   function formatDatePosted(isoDate) {
     if (!isoDate) return "Récemment";
     const diff = Math.floor(
-      (Date.now() - new Date(isoDate).getTime()) / (1000 * 60 * 60 * 24)
+      (Date.now() - new Date(isoDate).getTime()) / (1000 * 60 * 60 * 24),
     );
     if (diff === 0) return "Aujourd'hui";
     if (diff === 1) return "Hier";
@@ -85,10 +85,26 @@ function CompanyAvatar({ name }) {
 // --- Composant : Badge ---
 function Badge({ children, variant = "default" }) {
   const styles = {
-    default: { background: "#1e293b", color: "#94a3b8", border: "1px solid #334155" },
-    contract: { background: "#0f2744", color: "#60a5fa", border: "1px solid #1e40af55" },
-    skill: { background: "#1a1a1a", color: "#a3a3a3", border: "1px solid #2a2a2a" },
-    active: { background: "#052e16", color: "#4ade80", border: "1px solid #16a34a55" },
+    default: {
+      background: "#1e293b",
+      color: "#94a3b8",
+      border: "1px solid #334155",
+    },
+    contract: {
+      background: "#0f2744",
+      color: "#60a5fa",
+      border: "1px solid #1e40af55",
+    },
+    skill: {
+      background: "#1a1a1a",
+      color: "#a3a3a3",
+      border: "1px solid #2a2a2a",
+    },
+    active: {
+      background: "#052e16",
+      color: "#4ade80",
+      border: "1px solid #16a34a55",
+    },
   };
   return (
     <span
@@ -139,7 +155,12 @@ function JobCard({ job, onClick }) {
           <img
             src={job.company.logo}
             alt={job.company.name}
-            style={{ width: 48, height: 48, borderRadius: 10, objectFit: "cover" }}
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 10,
+              objectFit: "cover",
+            }}
           />
         ) : (
           <CompanyAvatar name={job.company.name} />
@@ -169,7 +190,14 @@ function JobCard({ job, onClick }) {
             {job.company.name}
           </div>
         </div>
-        <div style={{ fontSize: 11, color: "#475569", fontFamily: "'DM Mono', monospace", flexShrink: 0 }}>
+        <div
+          style={{
+            fontSize: 11,
+            color: "#475569",
+            fontFamily: "'DM Mono', monospace",
+            flexShrink: 0,
+          }}
+        >
           {job.datePosted}
         </div>
       </div>
@@ -194,16 +222,30 @@ function JobCard({ job, onClick }) {
       {job.skills.length > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
           {job.skills.map((skill) => (
-            <Badge key={skill} variant="skill">{skill}</Badge>
+            <Badge key={skill} variant="skill">
+              {skill}
+            </Badge>
           ))}
         </div>
       )}
 
       {/* Footer */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           {job.source && (
-            <span style={{ fontSize: 11, color: "#374151", fontFamily: "'DM Mono', monospace" }}>
+            <span
+              style={{
+                fontSize: 11,
+                color: "#374151",
+                fontFamily: "'DM Mono', monospace",
+              }}
+            >
               via {job.source.replace("_", " ")}
             </span>
           )}
@@ -277,14 +319,35 @@ function JobModal({ job, onClose }) {
         }}
       >
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}
+        >
           <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
             <CompanyAvatar name={job.company.name} />
             <div>
-              <h2 style={{ margin: 0, color: "#f1f5f9", fontFamily: "'Sora', sans-serif", fontSize: 18, fontWeight: 700 }}>
+              <h2
+                style={{
+                  margin: 0,
+                  color: "#f1f5f9",
+                  fontFamily: "'Sora', sans-serif",
+                  fontSize: 18,
+                  fontWeight: 700,
+                }}
+              >
                 {job.title}
               </h2>
-              <p style={{ margin: "4px 0 0", color: "#64748b", fontFamily: "'DM Mono', monospace", fontSize: 13 }}>
+              <p
+                style={{
+                  margin: "4px 0 0",
+                  color: "#64748b",
+                  fontFamily: "'DM Mono', monospace",
+                  fontSize: 13,
+                }}
+              >
                 {job.company.name} · {job.location.city}
               </p>
             </div>
@@ -314,18 +377,32 @@ function JobModal({ job, onClose }) {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           <Badge variant="contract">{job.contractType}</Badge>
           <Badge variant="default">📍 {job.location.city}</Badge>
-          {job.salary !== "Salaire non communiqué" && <Badge variant="default">💰 {job.salary}</Badge>}
+          {job.salary !== "Salaire non communiqué" && (
+            <Badge variant="default">💰 {job.salary}</Badge>
+          )}
           {job.isActive && <Badge variant="active">● Actif</Badge>}
         </div>
 
         {/* Compétences */}
         {job.skills.length > 0 && (
           <div>
-            <p style={{ color: "#94a3b8", fontFamily: "'DM Mono', monospace", fontSize: 12, marginBottom: 8, marginTop: 0 }}>
+            <p
+              style={{
+                color: "#94a3b8",
+                fontFamily: "'DM Mono', monospace",
+                fontSize: 12,
+                marginBottom: 8,
+                marginTop: 0,
+              }}
+            >
               COMPÉTENCES
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {job.skills.map((s) => <Badge key={s} variant="skill">{s}</Badge>)}
+              {job.skills.map((s) => (
+                <Badge key={s} variant="skill">
+                  {s}
+                </Badge>
+              ))}
             </div>
           </div>
         )}
@@ -333,7 +410,15 @@ function JobModal({ job, onClose }) {
         {/* Description */}
         {job.description && (
           <div>
-            <p style={{ color: "#94a3b8", fontFamily: "'DM Mono', monospace", fontSize: 12, marginBottom: 8, marginTop: 0 }}>
+            <p
+              style={{
+                color: "#94a3b8",
+                fontFamily: "'DM Mono', monospace",
+                fontSize: 12,
+                marginBottom: 8,
+                marginTop: 0,
+              }}
+            >
               DESCRIPTION
             </p>
             <div
@@ -401,7 +486,7 @@ export default function Offres({ apiBaseUrl = "http://localhost:8000" }) {
         if (!res.ok) throw new Error(`Erreur ${res.status}: ${res.statusText}`);
         const data = await res.json();
         // Gère les deux cas : tableau direct ou { results: [...] }
-        const rawJobs = Array.isArray(data) ? data : data.results ?? [];
+        const rawJobs = Array.isArray(data) ? data : (data.results ?? []);
         setJobs(rawJobs.map(mapApiJobToUiJob));
       } catch (err) {
         setError(err.message);
@@ -453,8 +538,17 @@ export default function Offres({ apiBaseUrl = "http://localhost:8000" }) {
           >
             Offres d'emploi
           </h1>
-          <p style={{ color: "#475569", margin: "0 0 24px", fontFamily: "'DM Mono', monospace", fontSize: 13 }}>
-            {loading ? "Chargement…" : `${filteredJobs.length} offre${filteredJobs.length !== 1 ? "s" : ""} disponible${filteredJobs.length !== 1 ? "s" : ""}`}
+          <p
+            style={{
+              color: "#475569",
+              margin: "0 0 24px",
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 13,
+            }}
+          >
+            {loading
+              ? "Chargement…"
+              : `${filteredJobs.length} offre${filteredJobs.length !== 1 ? "s" : ""} disponible${filteredJobs.length !== 1 ? "s" : ""}`}
           </p>
 
           {/* Barre de recherche */}
@@ -483,7 +577,14 @@ export default function Offres({ apiBaseUrl = "http://localhost:8000" }) {
         {/* Contenu */}
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           {loading && (
-            <div style={{ textAlign: "center", padding: "60px 0", color: "#475569", fontFamily: "'DM Mono', monospace" }}>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "60px 0",
+                color: "#475569",
+                fontFamily: "'DM Mono', monospace",
+              }}
+            >
               <div style={{ fontSize: 32, marginBottom: 12 }}>⟳</div>
               Chargement des offres…
             </div>
@@ -506,7 +607,14 @@ export default function Offres({ apiBaseUrl = "http://localhost:8000" }) {
           )}
 
           {!loading && !error && filteredJobs.length === 0 && (
-            <div style={{ textAlign: "center", padding: "60px 0", color: "#475569", fontFamily: "'DM Mono', monospace" }}>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "60px 0",
+                color: "#475569",
+                fontFamily: "'DM Mono', monospace",
+              }}
+            >
               Aucune offre trouvée pour "{search}"
             </div>
           )}
