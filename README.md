@@ -25,11 +25,6 @@ POSTGRES_DATABASE=nom_de_la_base
 POSTGRES_SCHEMA=app
 ```
 
-Pour utiliser PostgreSQL, modifiez également `DATABASE_URL` ainsi :
-
-```env
-DATABASE_URL=postgresql://postgres:mot_de_passe@localhost:5432/nom_de_la_base
-```
 
 > `POSTGRES_SCHEMA` doit rester `app` (obligatoire pour l'application).
 
