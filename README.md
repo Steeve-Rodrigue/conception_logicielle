@@ -1,11 +1,19 @@
-# Configuration de l'application
+# Configuration de l'application JOBPILOT
 
 Ce document explique la configuration de l'application à l'aide du fichier `.env`.
 
----
+
+
+1. Copiez ce fichier template pour créer le fichier `.env` :
+   ```bash
+   cp .env.template .env
+   ```
+2. Remplissez vos valeurs réelles pour PostgreSQL, les identifiants France Travail, etc.
+
+
 
 ## 1. Base de données
-### PostgreSQL (optionnel)
+### PostgreSQL 
 
 ```env
 POSTGRES_HOST=localhost
@@ -24,7 +32,7 @@ DATABASE_URL=postgresql://postgres:mot_de_passe@localhost:5432/nom_de_la_base
 
 > `POSTGRES_SCHEMA` doit rester `app` (obligatoire pour l'application).
 
----
+
 
 ## 2. Frontend (VITE)
 
@@ -38,7 +46,7 @@ FRONTEND_URL=http://localhost:5173
 
 > **Important :** Les variables commençant par `VITE_` sont exposées au frontend. Les autres restent côté backend.  
 
----
+
 
 ## 3. CORS (Cross-Origin Resource Sharing)
 
@@ -49,7 +57,7 @@ ALLOWED_ORIGINS=["http://localhost:3000", "http://localhost:5173", "http://local
 - Liste des origines autorisées à accéder à l'API backend.
 - Assurez-vous que l'URL de votre frontend y figure pour éviter les erreurs CORS.
 
----
+
 
 ## 4. API externe – France Travail (Pôle Emploi)
 
@@ -61,16 +69,6 @@ CLIENT_SECRET_FRANCE_TRAVAIL=votre_client_secret_ici
 - Ces identifiants sont nécessaires pour accéder à l'API France Travail.
 - Obtenez-les sur [https://francetravail.io](https://francetravail.io).
 
----
-
-## 5. Notes
-
-1. Copiez ce fichier template pour créer le fichier `.env` :
-   ```bash
-   cp .env.template .env
-   ```
-2. Remplissez vos valeurs réelles pour PostgreSQL, les identifiants France Travail, etc.
----
 
 
 
@@ -78,7 +76,8 @@ CLIENT_SECRET_FRANCE_TRAVAIL=votre_client_secret_ici
 
 
 
-# Projet-Conception-logicielle
+
+
 
 ## Backend API
 ### Premières commandes
