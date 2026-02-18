@@ -6,6 +6,7 @@ Ce document explique la configuration de l'application à l'aide du fichier `.en
 
 1. Copiez le fichier template dans le dossier backend pour créer le fichier `.env` :
    ```bash
+   cd backend
    cp .env.template .env
    ```
 2. Remplissez vos valeurs réelles pour PostgreSQL, les identifiants France Travail, etc.
