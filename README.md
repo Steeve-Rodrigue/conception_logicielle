@@ -66,14 +66,9 @@ CLIENT_SECRET_FRANCE_TRAVAIL=votre_client_secret_ici
 - Obtenez-les sur [https://francetravail.io](https://francetravail.io).
 
 
+---
 
-
-
-
-
-
-
-
+# Lancement de  l'application JOBPILOT
 
 ## Backend API
 ### Premières commandes
