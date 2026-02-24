@@ -79,7 +79,7 @@ class ProfileDao(metaclass=Singleton):
                             type_contrat_recherche = %(type_contrat_recherche)s,
                             salaire_min_souhaite = %(salaire_min_souhaite)s,
                             cv_path = %(cv_path)s,
-                            linkedin_url = %(linkedin_url)s,
+                            linkedin_url = %(linkedin_url)s
                         WHERE id_profil = %(id_profil)s;
                         """,
                         {
@@ -98,7 +98,7 @@ class ProfileDao(metaclass=Singleton):
             logging.error(f"Erreur MAJ profil: {e}")
         return False
 
-    def _row_to_profile(row: dict) -> CandidateProfile:
+    def _row_to_profile(self, row: dict) -> CandidateProfile:
         """Convertit une ligne SQL en objet CandidateProfile"""
         return CandidateProfile(
             id_profil=row["id_profil"],

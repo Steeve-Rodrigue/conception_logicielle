@@ -127,10 +127,6 @@ class ProfileService:
             categorie=categorie,
         )
 
-        if not skill.valider_niveau():
-            logger.error(f"Niveau invalide: {niveau}")
-            return False
-
         return self.skill_dao.ajouter_competence(skill)
 
     def lister_competences(self, id_profil: int) -> List[UserSkill]:
@@ -138,3 +134,14 @@ class ProfileService:
 
     def supprimer_competence(self, id_user_skill: int) -> bool:
         return self.skill_dao.supprimer_competence(id_user_skill)
+
+    def calculer_taux_completion_profil(self, id_utilisateur: int) -> Optional[float]:
+        """
+        Calcule le taux de complétion du profil
+
+        """
+        profile = self.profile_dao.obtenir_profil_par_utilisateur(id_utilisateur)
+        if not profile:
+            return None
+
+        return profile.calculer_taux_completion()

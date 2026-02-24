@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 
 from src.router import authentification
 from src.router import job
+from src.router import profile
+from src.router import skill
 
 load_dotenv()
 
@@ -28,6 +30,8 @@ app.add_middleware(
 
 app.include_router(authentification.router)
 app.include_router(job.router)
+app.include_router(profile.router)
+app.include_router(skill.router)
 
 
 @app.get("/")
