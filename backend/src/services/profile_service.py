@@ -1,4 +1,3 @@
-import logging
 from datetime import date
 from typing import Optional, List
 
@@ -6,7 +5,9 @@ from src.business_object.candidate_profile import CandidateProfile
 from src.business_object.user_skill import UserSkill
 from src.dao.profile_dao import ProfileDao
 from src.dao.skill_dao import SkillDao
+from src.utils.logger import setup_logger
 
+logger = setup_logger(__name__)
 
 class ProfileService:
     """
@@ -44,14 +45,14 @@ class ProfileService:
                 linkedin_url=linkedin_url,
             )
         except ValueError as e:
-            logging.error(f"Erreur métier lors de la création du profil : {e}")
+            logger.error(f"Erreur métier lors de la création du profil : {e}")
             return None
 
         if self.profile_dao.creer_profil(profile):
-            logging.info(f"Profil créé pour utilisateur {id_utilisateur}")
+            logger.info(f"Profil créé pour utilisateur {id_utilisateur}")
             return profile
 
-        logging.error("Échec création profil en base de données")
+        logger.error("Échec création profil en base de données")
         return None
 
     def obtenir_profil_utilisateur(
@@ -78,7 +79,7 @@ class ProfileService:
         profile = self.profile_dao.obtenir_profil_par_utilisateur(id_utilisateur)
 
         if not profile:
-            logging.error(f"Profil introuvable pour utilisateur {id_utilisateur}")
+            logger.error(f"Profil introuvable pour utilisateur {id_utilisateur}")
             return False
 
         try:
@@ -106,7 +107,7 @@ class ProfileService:
             profile._valider_donnees_metier()
 
         except ValueError as e:
-            logging.error(f"Erreur métier lors de la mise à jour : {e}")
+            logger.error(f"Erreur métier lors de la mise à jour : {e}")
             return False
 
         return self.profile_dao.mettre_a_jour_profil(profile)
@@ -115,7 +116,7 @@ class ProfileService:
         self, id_profil: int, nom_competence: str, niveau: str, categorie: str
     ) -> bool:
         if self.skill_dao.competence_existe(id_profil, nom_competence):
-            logging.warning(f"Compétence '{nom_competence}' déjà présente")
+            logger.warning(f"Compétence '{nom_competence}' déjà présente")
             return False
 
         skill = UserSkill(
@@ -126,7 +127,7 @@ class ProfileService:
         )
 
         if not skill.valider_niveau():
-            logging.error(f"Niveau invalide: {niveau}")
+            logger.error(f"Niveau invalide: {niveau}")
             return False
 
         return self.skill_dao.ajouter_competence(skill)
