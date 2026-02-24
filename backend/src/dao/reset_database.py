@@ -45,7 +45,9 @@ class ResetDatabase(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     init_queries = [q.strip() for q in init_sql.split(";") if q.strip()]
-                    logger.info(f"Exécution de {len(init_queries)} requêtes d'initialisation...")
+                    logger.info(
+                        f"Exécution de {len(init_queries)} requêtes d'initialisation..."
+                    )
                     for i, query in enumerate(init_queries, 1):
                         cursor.execute(query)
             connection.commit()
@@ -60,9 +62,7 @@ class ResetDatabase(metaclass=Singleton):
 
             for mot in TERMES_IA_ML:
                 offres = service.rechercher_offres(
-                    mots_cles=mot,
-                    departement=None,  
-                    limit=limit_par_motcle
+                    mots_cles=mot, departement=None, limit=limit_par_motcle
                 )
 
                 inserted = 0

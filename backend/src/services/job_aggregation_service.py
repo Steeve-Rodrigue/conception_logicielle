@@ -16,9 +16,7 @@ class JobAggregationService:
         self.france_travail = FranceTravailService()
 
     def synchroniser_offres(
-        self,
-        termes: List[str],
-        departement: Optional[str] = None
+        self, termes: List[str], departement: Optional[str] = None
     ) -> int:
         """
         Synchronise les offres depuis France Travail vers la BDD locale
@@ -38,8 +36,7 @@ class JobAggregationService:
         for terme in termes:
             logging.info(f"  Recherche pour le terme : {terme}")
             offers: List[JobOffer] = self.france_travail.rechercher_toutes_offres(
-                mots_cles=terme,
-                departement=departement
+                mots_cles=terme, departement=departement
             )
             count_terme = 0
             for offer in offers:
@@ -58,7 +55,7 @@ class JobAggregationService:
         type_contrat: Optional[str] = None,
         competences: Optional[List[str]] = None,
         limit: int = 100,
-        offset: int = 0
+        offset: int = 0,
     ) -> List[JobOffer]:
         """Recherche des offres dans la BDD locale"""
         return self.job_offer_dao.rechercher_offres(
@@ -67,5 +64,5 @@ class JobAggregationService:
             type_contrat=type_contrat,
             competences=competences,
             limit=limit,
-            offset=offset
+            offset=offset,
         )

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query, BackgroundTasks, status
-from typing import Optional, List
+from typing import Optional
 
 from src.dao.job_offer_dao import JobOfferDao
 from src.dto.job_dto import JobOfferDTO, JobSearchResponse, SyncRequest, SyncResponse
@@ -11,11 +11,7 @@ job_dao = JobOfferDao()
 job_service = JobAggregationService()
 
 
-@router.get(
-    "/",
-    response_model=JobSearchResponse,
-    summary="Rechercher des offres"
-)
+@router.get("/", response_model=JobSearchResponse, summary="Rechercher des offres")
 def get_all_jobs(
     q: Optional[str] = Query(None, description="Recherche par mots-clés"),
     localisation: Optional[str] = Query(None, description="Filtrer par ville"),
@@ -36,8 +32,7 @@ def get_all_jobs(
     )
 
     return JobSearchResponse(
-        total=len(offres),
-        results=[JobOfferDTO.model_validate(o) for o in offres]
+        total=len(offres), results=[JobOfferDTO.model_validate(o) for o in offres]
     )
 
 
@@ -45,16 +40,21 @@ def get_all_jobs(
     "/sync",
     response_model=SyncResponse,
     status_code=status.HTTP_202_ACCEPTED,
-    summary="Synchroniser avec France Travail"
+    summary="Synchroniser avec France Travail",
 )
-
 @router.post("/sync", response_model=SyncResponse, status_code=202)
 def sync_jobs(sync_params: SyncRequest, background_tasks: BackgroundTasks):
     termes = [t for t in (sync_params.termes or TERMES_IA_ML) if t and t != "string"]
-    departement = sync_params.departement if sync_params.departement and sync_params.departement != "string" else None
+    departement = (
+        sync_params.departement
+        if sync_params.departement and sync_params.departement != "string"
+        else None
+    )
 
     if not termes:
-        return SyncResponse(status="erreur", message="Aucun terme de recherche valide fourni")
+        return SyncResponse(
+            status="erreur", message="Aucun terme de recherche valide fourni"
+        )
 
     background_tasks.add_task(
         job_service.synchroniser_offres,
@@ -63,22 +63,17 @@ def sync_jobs(sync_params: SyncRequest, background_tasks: BackgroundTasks):
     )
 
     return SyncResponse(
-        status="en cours",
-        message=f"Synchronisation démarrée pour {len(termes)} termes"
+        status="en cours", message=f"Synchronisation démarrée pour {len(termes)} termes"
     )
 
 
-@router.get(
-    "/{id_offre}",
-    response_model=JobOfferDTO,
-    summary="Détails d'une offre"
-)
+@router.get("/{id_offre}", response_model=JobOfferDTO, summary="Détails d'une offre")
 def get_job_details(id_offre: int):
     """Récupère une offre par son ID"""
     offre = job_dao.trouver_par_id(id_offre)
     if not offre:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Offre {id_offre} introuvable"
+            detail=f"Offre {id_offre} introuvable",
         )
     return JobOfferDTO.model_validate(offre)

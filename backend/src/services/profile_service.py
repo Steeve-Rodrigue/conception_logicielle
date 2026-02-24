@@ -9,6 +9,7 @@ from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
+
 class ProfileService:
     """
     SERVICE : Orchestre la logique applicative des profils candidats.

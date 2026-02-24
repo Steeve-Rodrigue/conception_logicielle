@@ -4,7 +4,6 @@ Organisée par catégories pour faciliter l’évolution.
 """
 
 TECH_KEYWORDS = [
-
     # ----------------------
     # Langages de programmation
     # ----------------------
@@ -21,7 +20,6 @@ TECH_KEYWORDS = [
     "Kotlin",
     " R ",
     "PHP",
-
     # ----------------------
     # Data / IA / Machine Learning
     # ----------------------
@@ -48,7 +46,6 @@ TECH_KEYWORDS = [
     "Computer Vision",
     "LLM",
     "Generative AI",
-
     # ----------------------
     # Web / Frontend
     # ----------------------
@@ -61,7 +58,6 @@ TECH_KEYWORDS = [
     "Sass",
     "Bootstrap",
     "Tailwind",
-
     # ----------------------
     # Backend
     # ----------------------
@@ -73,7 +69,6 @@ TECH_KEYWORDS = [
     "Flask",
     "FastAPI",
     ".NET",
-
     # ----------------------
     # Cloud / DevOps
     # ----------------------
@@ -88,7 +83,6 @@ TECH_KEYWORDS = [
     "GitLab CI",
     "GitHub Actions",
     "Jenkins",
-
     # ----------------------
     # Bases de données
     # ----------------------
@@ -99,7 +93,6 @@ TECH_KEYWORDS = [
     "Redis",
     "Oracle",
     "Elasticsearch",
-
     # ----------------------
     # Outils & Versioning
     # ----------------------

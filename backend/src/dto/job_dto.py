@@ -7,6 +7,7 @@ from datetime import datetime
 
 class JobOfferDTO(BaseModel):
     """DTO pour une offre d'emploi"""
+
     id_offre: int
     external_id: str
     titre: str
@@ -27,23 +28,20 @@ class JobOfferDTO(BaseModel):
 
 class JobSearchResponse(BaseModel):
     """Réponse pour la recherche d'offres"""
+
     total: int
     results: List[JobOfferDTO]
 
 
-
 class SyncRequest(BaseModel):
     termes: Optional[List[str]] = Field(
-        None,
-        description="Liste de termes à rechercher"
+        None, description="Liste de termes à rechercher"
     )
-    departement: Optional[str] = Field(
-        None,
-        description="Code département"
-    )
+    departement: Optional[str] = Field(None, description="Code département")
 
 
 class SyncResponse(BaseModel):
     """Réponse de synchronisation"""
+
     status: str
     message: str
