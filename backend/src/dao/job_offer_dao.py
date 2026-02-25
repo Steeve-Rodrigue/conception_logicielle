@@ -1,10 +1,11 @@
-import logging
 from typing import Optional, List
 
 from src.business_object.job_offer import JobOffer
 from src.dao.db_connection import DBConnection
 from src.utils.singleton import Singleton
+from src.utils.logger import setup_logger
 
+logger = setup_logger(__name__)
 
 class JobOfferDao(metaclass=Singleton):
     """DAO pour la gestion des offres d'emploi."""
@@ -60,7 +61,7 @@ class JobOfferDao(metaclass=Singleton):
                         offer.id_offre = res["id_offre"]
                         return True
         except Exception as e:
-            logging.error(f"Erreur création offre: {e}")
+            logger.error(f"Erreur création offre: {e}")
         return False
 
     def trouver_par_id(self, id_offre: int) -> Optional[JobOffer]:
@@ -76,7 +77,7 @@ class JobOfferDao(metaclass=Singleton):
                     if res:
                         return self._row_to_offer(res)
         except Exception as e:
-            logging.error(f"Erreur recherche offre: {e}")
+            logger.error(f"Erreur recherche offre: {e}")
         return None
 
     def rechercher_offres(
@@ -119,7 +120,7 @@ class JobOfferDao(metaclass=Singleton):
                     rows = cursor.fetchall()
                     return [self._row_to_offer(row) for row in rows]
         except Exception as e:
-            logging.error(f"Erreur recherche offres: {e}")
+            logger.error(f"Erreur recherche offres: {e}")
         return []
 
     def desactiver_anciennes_offres(self, jours: int = 30) -> int:
@@ -138,7 +139,7 @@ class JobOfferDao(metaclass=Singleton):
                     )
                     return cursor.rowcount
         except Exception as e:
-            logging.error(f"Erreur désactivation offres: {e}")
+            logger.error(f"Erreur désactivation offres: {e}")
         return 0
 
     @staticmethod

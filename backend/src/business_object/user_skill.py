@@ -19,7 +19,7 @@ class UserSkill:
         Catégorie de la compétence.
     """
 
-    NIVEAUX_VALIDES = ["Débutant", "Intermédiaire", "Avancé", "Expert"]
+    NIVEAUX_VALIDES = ["Debutant", "Intermediaire", "Avance", "Expert"]
     CATEGORIES_VALIDES = ["Langage", "Framework", "Outil", "Soft Skill", "Autre"]
 
     def __init__(

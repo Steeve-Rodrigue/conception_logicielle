@@ -17,7 +17,6 @@ class CandidateProfile:
         salaire_min_souhaite: Optional[int] = None,
         cv_path: Optional[str] = None,
         linkedin_url: Optional[str] = None,
-        portfolio_url: Optional[str] = None,  # ✅ Ajouté
         id_profil: Optional[int] = None,
         date_maj: Optional[datetime] = None,
     ):
@@ -30,7 +29,6 @@ class CandidateProfile:
         self.salaire_min_souhaite = salaire_min_souhaite
         self.cv_path = cv_path
         self.linkedin_url = linkedin_url
-        self.portfolio_url = portfolio_url  # ✅ Ajouté
         self.date_maj = date_maj or datetime.now()
 
         self._valider_donnees_metier()

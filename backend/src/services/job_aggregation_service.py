@@ -1,15 +1,17 @@
-import logging
+"""Service d'agrégation d'offres d'emploi"""
+
 from typing import List, Optional
 
 from src.business_object.job_offer import JobOffer
 from src.dao.job_offer_dao import JobOfferDao
 from src.services.france_travail_service import FranceTravailService
+from src.utils.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 
 class JobAggregationService:
-    """
-    Service d'agrégation d'offres d'emploi depuis plusieurs sources.
-    """
+    """Service d'agrégation d'offres d'emploi depuis plusieurs sources"""
 
     def __init__(self):
         self.job_offer_dao = JobOfferDao()
@@ -20,7 +22,6 @@ class JobAggregationService:
     ) -> int:
         """
         Synchronise les offres depuis France Travail vers la BDD locale
-        pour une liste de termes et un département optionnel.
 
         Args:
             termes: Liste de mots-clés (ex: ["data scientist", "ML"])
@@ -29,23 +30,32 @@ class JobAggregationService:
         Returns:
             Nombre d'offres synchronisées
         """
-        logging.info(f" Synchronisation des offres pour {len(termes)} termes")
-
+        logger.info(f" Synchronisation pour {len(termes)} termes")
+        
         count_total = 0
+        offres_vues = set()  # Pour éviter les doublons entre termes
 
         for terme in termes:
-            logging.info(f"  Recherche pour le terme : {terme}")
-            offers: List[JobOffer] = self.france_travail.rechercher_toutes_offres(
-                mots_cles=terme, departement=departement
+            logger.info(f"🔎 Terme: '{terme}'")
+            
+            # Rechercher les offres
+            offers: List[JobOffer] = self.france_travail.rechercher_offres(
+                mots_cles=terme, 
+                departement=departement
             )
+
+            # Sauvegarder en base (avec déduplication)
             count_terme = 0
             for offer in offers:
-                if self.job_offer_dao.creer_offre(offer):
-                    count_terme += 1
-            logging.info(f"    {count_terme} nouvelles offres pour '{terme}'")
+                if offer.external_id not in offres_vues:
+                    if self.job_offer_dao.creer_offre(offer):
+                        count_terme += 1
+                        offres_vues.add(offer.external_id)
+
+            logger.info(f"   → {count_terme} nouvelles offres pour '{terme}'")
             count_total += count_terme
 
-        logging.info(f"Total synchronisé : {count_total} offres")
+        logger.info(f"Total synchronisé: {count_total} offres")
         return count_total
 
     def rechercher_offres_locales(

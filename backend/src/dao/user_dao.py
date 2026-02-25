@@ -1,9 +1,11 @@
-import logging
 from typing import Optional
 
 from src.business_object.user import User
 from src.dao.db_connection import DBConnection
 from src.utils.singleton import Singleton
+from src.utils.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 
 class UserDao(metaclass=Singleton):
@@ -43,7 +45,7 @@ class UserDao(metaclass=Singleton):
                         user.id_utilisateur = res["id_utilisateur"]
                         return True
         except Exception as e:
-            logging.error(f"Erreur création compte: {e}")
+            logger.error(f"Erreur création compte: {e}")
         return False
 
     def trouver_par_email(self, email: str) -> Optional[User]:
@@ -59,7 +61,7 @@ class UserDao(metaclass=Singleton):
                     if res:
                         return self._row_to_user(res)
         except Exception as e:
-            logging.error(f"Erreur recherche par email: {e}")
+            logger.error(f"Erreur recherche par email: {e}")
         return None
 
     def trouver_par_pseudo(self, pseudo: str) -> Optional[User]:
@@ -75,7 +77,7 @@ class UserDao(metaclass=Singleton):
                     if res:
                         return self._row_to_user(res)
         except Exception as e:
-            logging.error(f"Erreur recherche par pseudo: {e}")
+            logger.error(f"Erreur recherche par pseudo: {e}")
         return None
 
     def trouver_par_id(self, id_utilisateur: int) -> Optional[User]:
@@ -91,7 +93,7 @@ class UserDao(metaclass=Singleton):
                     if res:
                         return self._row_to_user(res)
         except Exception as e:
-            logging.error(f"Erreur recherche par ID: {e}")
+            logger.error(f"Erreur recherche par ID: {e}")
         return None
 
     def modifier(self, user: User) -> bool:
@@ -120,7 +122,7 @@ class UserDao(metaclass=Singleton):
                     )
                     return cursor.rowcount > 0
         except Exception as e:
-            logging.error(f"Erreur modification utilisateur: {e}")
+            logger.error(f"Erreur modification utilisateur: {e}")
         return False
 
     def supprimer(self, id_utilisateur: int) -> bool:
@@ -134,7 +136,7 @@ class UserDao(metaclass=Singleton):
                     )
                     return cursor.rowcount > 0
         except Exception as e:
-            logging.error(f"Erreur suppression utilisateur: {e}")
+            logger.error(f"Erreur suppression utilisateur: {e}")
         return False
 
     def mettre_a_jour_derniere_connexion(self, id_utilisateur: int) -> bool:
@@ -152,7 +154,7 @@ class UserDao(metaclass=Singleton):
                     )
                     return cursor.rowcount > 0
         except Exception as e:
-            logging.error(f"Erreur MAJ dernière connexion: {e}")
+            logger.error(f"Erreur MAJ dernière connexion: {e}")
         return False
 
     def _row_to_user(self, row: dict) -> User:

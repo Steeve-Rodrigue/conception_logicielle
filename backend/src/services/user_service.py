@@ -1,4 +1,3 @@
-import logging
 from typing import Optional
 from datetime import datetime, date, timedelta
 
@@ -10,6 +9,9 @@ from src.utils.security import (
     verify_password,
     validate_password_strength,
 )
+from src.utils.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 
 class UserService:
@@ -41,20 +43,20 @@ class UserService:
             prenom=prenom,
         )
         if not user_temp.valider_email():
-            logging.error(f"Email invalide: {email}")
+            logger.error(f"Email invalide: {email}")
             return None
 
         is_valid, message = validate_password_strength(mdp)
         if not is_valid:
-            logging.error(f"Mot de passe invalide: {message}")
+            logger.error(f"Mot de passe invalide: {message}")
             return None
 
         # Vérification unicité email et pseudo
         if self.email_deja_utilise(email):
-            logging.error(f"Email déjà utilisé: {email}")
+            logger.error(f"Email déjà utilisé: {email}")
             return None
         if self.pseudo_deja_utilise(pseudo):
-            logging.error(f"Pseudo déjà utilisé: {pseudo}")
+            logger.error(f"Pseudo déjà utilisé: {pseudo}")
             return None
 
         # Hashage du mot de passe
@@ -88,7 +90,7 @@ class UserService:
         """
         user = self.user_dao.trouver_par_email(email)
         if not user:
-            logging.warning(f"Tentative de connexion échouée pour email: {email}")
+            logger.warning(f"Tentative de connexion échouée pour email: {email}")
             return None
 
         # Vérification du mot de passe
@@ -96,7 +98,7 @@ class UserService:
             self.user_dao.mettre_a_jour_derniere_connexion(user.id_utilisateur)
             return user
 
-        logging.warning(f"Mot de passe incorrect pour: {email}")
+        logger.warning(f"Mot de passe incorrect pour: {email}")
         return None
 
     def modifier_utilisateur(
@@ -117,17 +119,17 @@ class UserService:
             # Validation email
             user_temp = User(email=email, pseudo="temp", mdp_hash="", nom="", prenom="")
             if not user_temp.valider_email():
-                logging.error(f"Email invalide: {email}")
+                logger.error(f"Email invalide: {email}")
                 return False
 
             if self.email_deja_utilise(email):
-                logging.error(f"Email déjà utilisé: {email}")
+                logger.error(f"Email déjà utilisé: {email}")
                 return False
             user.email = email
 
         if pseudo and pseudo != user.pseudo:
             if self.pseudo_deja_utilise(pseudo):
-                logging.error(f"Pseudo déjà utilisé: {pseudo}")
+                logger.error(f"Pseudo déjà utilisé: {pseudo}")
                 return False
             user.pseudo = pseudo
 
@@ -148,13 +150,13 @@ class UserService:
 
         # Vérification ancien mot de passe
         if not verify_password(ancien_mdp, user.mdp_hash):
-            logging.error("Ancien mot de passe incorrect")
+            logger.error("Ancien mot de passe incorrect")
             return False
 
         # Validation nouveau mot de passe
         is_valid, message = validate_password_strength(nouveau_mdp)
         if not is_valid:
-            logging.error(f"Nouveau mot de passe invalide: {message}")
+            logger.error(f"Nouveau mot de passe invalide: {message}")
             return False
 
         # Mise à jour avec nouveau hash

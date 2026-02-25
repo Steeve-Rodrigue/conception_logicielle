@@ -1,9 +1,12 @@
-import logging
 from typing import Optional
 
 from src.business_object.candidate_profile import CandidateProfile
 from src.dao.db_connection import DBConnection
 from src.utils.singleton import Singleton
+from src.utils.logger import setup_logger
+
+
+logger = setup_logger(__name__)
 
 
 class ProfileDao(metaclass=Singleton):
@@ -44,7 +47,7 @@ class ProfileDao(metaclass=Singleton):
                         profile.id_profil = res["id_profil"]
                         return True
         except Exception as e:
-            logging.error(f"Erreur création profil: {e}")
+            logger.error(f"Erreur création profil: {e}")
         return False
 
     def obtenir_profil_par_utilisateur(
@@ -62,7 +65,7 @@ class ProfileDao(metaclass=Singleton):
                     if res:
                         return self._row_to_profile(res)
         except Exception as e:
-            logging.error(f"Erreur récupération profil: {e}")
+            logger.error(f"Erreur récupération profil: {e}")
         return None
 
     def mettre_a_jour_profil(self, profile: CandidateProfile) -> bool:
@@ -95,7 +98,7 @@ class ProfileDao(metaclass=Singleton):
                     )
                     return cursor.rowcount > 0
         except Exception as e:
-            logging.error(f"Erreur MAJ profil: {e}")
+            logger.error(f"Erreur MAJ profil: {e}")
         return False
 
     def _row_to_profile(self, row: dict) -> CandidateProfile:

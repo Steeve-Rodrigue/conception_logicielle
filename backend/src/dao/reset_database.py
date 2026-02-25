@@ -8,10 +8,12 @@ from src.dao.db_connection import DBConnection
 from src.services.france_travail_service import FranceTravailService
 from src.dao.job_offer_dao import JobOfferDao
 from src.utils.search_terms import TERMES_IA_ML
-import logging
+from src.utils.logger import setup_logger
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+
+
+logger = setup_logger(__name__)
+
 
 src_path = Path(__file__).resolve().parent.parent
 if str(src_path) not in sys.path:

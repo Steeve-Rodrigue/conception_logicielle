@@ -1,9 +1,12 @@
-import logging
 from typing import List
 
 from src.business_object.user_skill import UserSkill
 from src.dao.db_connection import DBConnection
 from src.utils.singleton import Singleton
+from src.utils.logger import setup_logger
+
+
+logger = setup_logger(__name__)
 
 
 class SkillDao(metaclass=Singleton):
@@ -36,7 +39,7 @@ class SkillDao(metaclass=Singleton):
                         skill.id_user_skill = res["id_user_skill"]
                         return True
         except Exception as e:
-            logging.error(f"Erreur ajout compétence: {e}")
+            logger.error(f"Erreur ajout compétence: {e}")
         return False
 
     def lister_competences_utilisateur(self, id_profil: int) -> List[UserSkill]:
@@ -53,7 +56,7 @@ class SkillDao(metaclass=Singleton):
                     for row in rows:
                         competences.append(self._row_to_skill(row))
         except Exception as e:
-            logging.error(f"Erreur liste compétences: {e}")
+            logger.error(f"Erreur liste compétences: {e}")
         return competences
 
     def supprimer_competence(self, id_user_skill: int) -> bool:
@@ -67,7 +70,7 @@ class SkillDao(metaclass=Singleton):
                     )
                     return cursor.rowcount > 0
         except Exception as e:
-            logging.error(f"Erreur suppression compétence: {e}")
+            logger.error(f"Erreur suppression compétence: {e}")
         return False
 
     def competence_existe(self, id_profil: int, nom_competence: str) -> bool:
@@ -85,7 +88,7 @@ class SkillDao(metaclass=Singleton):
                     )
                     return cursor.fetchone() is not None
         except Exception as e:
-            logging.error(f"Erreur: la compétence existe déjà: {e}")
+            logger.error(f"Erreur: la compétence existe déjà: {e}")
         return False
 
     def _row_to_skill(row: dict) -> UserSkill:
