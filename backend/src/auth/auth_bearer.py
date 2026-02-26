@@ -3,6 +3,7 @@ Middleware d'authentification JWT pour FastAPI.
 Ce fichier contient la classe pour protéger les routes :
 - JWTBearer : Pour les routes nécessitant une connexion
 """
+
 import logging
 
 from fastapi import Request

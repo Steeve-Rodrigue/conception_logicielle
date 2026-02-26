@@ -51,7 +51,6 @@ liste_competences = [
 ]
 
 
-
 def test_creer_profil_ok():
     """Création de profil réussie"""
     # GIVEN
@@ -60,7 +59,7 @@ def test_creer_profil_ok():
     experience = 3
     disponibilite = DATE_DISPONIBILITE
     contrat = "CDI"
-    
+
     service = ProfileService()
     service.profile_dao.creer_profil = MagicMock(return_value=True)
 
@@ -79,7 +78,6 @@ def test_creer_profil_ok():
     assert profile.titre_professionnel == titre
     assert profile.annees_experience == experience
     assert profile.type_contrat_recherche == contrat
-
 
 
 def test_creer_profil_echec_dao():
@@ -110,7 +108,7 @@ def test_creer_profil_experience_negative():
     profile = service.creer_profil(
         id_utilisateur=1,
         titre_professionnel="Data Scientist",
-        annees_experience=-1,  
+        annees_experience=-1,
         date_disponibilite=DATE_DISPONIBILITE,
         type_contrat_recherche="CDI",
     )
@@ -130,7 +128,7 @@ def test_creer_profil_contrat_invalide():
         titre_professionnel="Data Scientist",
         annees_experience=3,
         date_disponibilite=DATE_DISPONIBILITE,
-        type_contrat_recherche="INVALIDE",  
+        type_contrat_recherche="INVALIDE",
     )
 
     # THEN
@@ -156,12 +154,11 @@ def test_creer_profil_date_passee():
     assert profile is None
 
 
-
 def test_obtenir_profil_utilisateur_ok():
     """Récupération profil réussie"""
     # GIVEN
     id_utilisateur = 1
-    
+
     service = ProfileService()
     service.profile_dao.obtenir_profil_par_utilisateur = MagicMock(
         return_value=liste_profils[0]
@@ -179,7 +176,7 @@ def test_obtenir_profil_utilisateur_inexistant():
     """Récupération profil inexistant"""
     # GIVEN
     id_utilisateur = 999
-    
+
     service = ProfileService()
     service.profile_dao.obtenir_profil_par_utilisateur = MagicMock(return_value=None)
 
@@ -190,13 +187,12 @@ def test_obtenir_profil_utilisateur_inexistant():
     assert profile is None
 
 
-
 def test_mettre_a_jour_profil_ok():
     """Mise à jour profil réussie"""
     # GIVEN
     id_utilisateur = 1
     nouveau_titre = "Senior Data Scientist"
-    
+
     service = ProfileService()
     service.profile_dao.obtenir_profil_par_utilisateur = MagicMock(
         return_value=liste_profils[0]
@@ -217,7 +213,7 @@ def test_mettre_a_jour_profil_inexistant():
     """Mise à jour profil inexistant"""
     # GIVEN
     id_utilisateur = 999
-    
+
     service = ProfileService()
     service.profile_dao.obtenir_profil_par_utilisateur = MagicMock(return_value=None)
 
@@ -235,7 +231,7 @@ def test_mettre_a_jour_profil_experience_negative():
     """Mise à jour avec expérience négative"""
     # GIVEN
     id_utilisateur = 1
-    
+
     service = ProfileService()
     service.profile_dao.obtenir_profil_par_utilisateur = MagicMock(
         return_value=liste_profils[0]
@@ -255,7 +251,7 @@ def test_mettre_a_jour_profil_echec_dao():
     """Mise à jour échouée au niveau DAO"""
     # GIVEN
     id_utilisateur = 1
-    
+
     service = ProfileService()
     service.profile_dao.obtenir_profil_par_utilisateur = MagicMock(
         return_value=liste_profils[0]
@@ -272,7 +268,6 @@ def test_mettre_a_jour_profil_echec_dao():
     assert result is False
 
 
-
 def test_ajouter_competence_ok():
     """Ajout de compétence réussi"""
     # GIVEN
@@ -280,7 +275,7 @@ def test_ajouter_competence_ok():
     nom = "Python"
     niveau = "Avance"
     categorie = "Langage"
-    
+
     service = ProfileService()
     service.skill_dao.competence_existe = MagicMock(return_value=False)
     service.skill_dao.ajouter_competence = MagicMock(return_value=True)
@@ -299,7 +294,7 @@ def test_ajouter_competence_deja_existante():
     nom = "Python"
     niveau = "Avance"
     categorie = "Langage"
-    
+
     service = ProfileService()
     service.skill_dao.competence_existe = MagicMock(return_value=True)
 
@@ -317,7 +312,7 @@ def test_ajouter_competence_echec_dao():
     nom = "Python"
     niveau = "Avance"
     categorie = "Langage"
-    
+
     service = ProfileService()
     service.skill_dao.competence_existe = MagicMock(return_value=False)
     service.skill_dao.ajouter_competence = MagicMock(return_value=False)
@@ -333,7 +328,7 @@ def test_lister_competences_ok():
     """Liste des compétences"""
     # GIVEN
     id_profil = 1
-    
+
     service = ProfileService()
     service.skill_dao.lister_competences_utilisateur = MagicMock(
         return_value=liste_competences
@@ -351,7 +346,7 @@ def test_lister_competences_vide():
     """Liste vide de compétences"""
     # GIVEN
     id_profil = 999
-    
+
     service = ProfileService()
     service.skill_dao.lister_competences_utilisateur = MagicMock(return_value=[])
 
@@ -366,7 +361,7 @@ def test_supprimer_competence_ok():
     """Suppression compétence réussie"""
     # GIVEN
     id_user_skill = 1
-    
+
     service = ProfileService()
     service.skill_dao.supprimer_competence = MagicMock(return_value=True)
 
@@ -381,7 +376,7 @@ def test_supprimer_competence_inexistante():
     """Suppression compétence inexistante"""
     # GIVEN
     id_user_skill = 999
-    
+
     service = ProfileService()
     service.skill_dao.supprimer_competence = MagicMock(return_value=False)
 
@@ -392,12 +387,11 @@ def test_supprimer_competence_inexistante():
     assert result is False
 
 
-
 def test_calculer_taux_completion_ok():
     """Calcul taux de complétion réussi"""
     # GIVEN
     id_utilisateur = 1
-    
+
     service = ProfileService()
     service.profile_dao.obtenir_profil_par_utilisateur = MagicMock(
         return_value=liste_profils[0]
@@ -415,7 +409,7 @@ def test_calculer_taux_completion_profil_inexistant():
     """Calcul taux de complétion profil inexistant"""
     # GIVEN
     id_utilisateur = 999
-    
+
     service = ProfileService()
     service.profile_dao.obtenir_profil_par_utilisateur = MagicMock(return_value=None)
 
@@ -428,4 +422,5 @@ def test_calculer_taux_completion_profil_inexistant():
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__, "-v"])

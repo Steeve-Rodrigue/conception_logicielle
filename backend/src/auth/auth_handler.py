@@ -6,6 +6,7 @@ Ce fichier contient toutes les fonctions pour :
 - Vérifier un login/mot de passe
 - Extraire les infos d'un token
 """
+
 import os
 import logging
 from datetime import datetime, timedelta
@@ -102,7 +103,9 @@ def check_utilisateur(email: str, mdp: str) -> Optional[int]:
         if not utilisateur:
             logger.warning("Email '%s' introuvable ou mot de passe incorrect", email)
             return None
-        logger.info("Connexion réussie pour '%s' (ID: %s)", email, utilisateur.id_utilisateur)
+        logger.info(
+            "Connexion réussie pour '%s' (ID: %s)", email, utilisateur.id_utilisateur
+        )
         return utilisateur.id_utilisateur
     except Exception as e:
         logger.error("Erreur lors de la vérification : %s", e)

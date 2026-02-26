@@ -60,9 +60,8 @@ class CandidateProfile:
             "salaire_min_souhaite": self.salaire_min_souhaite,
             "cv_path": self.cv_path,
             "linkedin_url": self.linkedin_url,
-            "portfolio_url": self.portfolio_url,  # ✅ Ajouté
             "date_maj": self.date_maj.isoformat() if self.date_maj else None,
-            "taux_completion": self.calculer_taux_completion(),  # ✅ Ajouté
+            "taux_completion": self.calculer_taux_completion(),
         }
 
     def calculer_taux_completion(self) -> float:

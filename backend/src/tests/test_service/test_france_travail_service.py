@@ -22,14 +22,13 @@ offre_json_test = {
     "description": "Nous recherchons un Data Scientist avec Python et SQL",
     "competences": [
         {"code": "123", "libelle": "Python", "exigence": "E"},
-        {"code": "456", "libelle": "SQL", "exigence": "E"}
+        {"code": "456", "libelle": "SQL", "exigence": "E"},
     ],
     "origineOffre": {
         "origine": "1",
-        "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/204GHCG"
-    }
+        "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/204GHCG",
+    },
 }
-
 
 
 def test_parse_offre_ok():
@@ -49,7 +48,10 @@ def test_parse_offre_ok():
     assert offre.type_contrat == "CDI"
     assert "Python" in offre.competences_requises
     assert "SQL" in offre.competences_requises
-    assert offre.url_origine == "https://candidat.francetravail.fr/offres/recherche/detail/204GHCG"
+    assert (
+        offre.url_origine
+        == "https://candidat.francetravail.fr/offres/recherche/detail/204GHCG"
+    )
 
 
 def test_parse_offre_sans_competences():
@@ -58,7 +60,9 @@ def test_parse_offre_sans_competences():
     service = FranceTravailService()
     offre_sans_competences = offre_json_test.copy()
     offre_sans_competences["competences"] = []
-    offre_sans_competences["description"] = "Nous cherchons quelqu'un avec Python et Docker"
+    offre_sans_competences["description"] = (
+        "Nous cherchons quelqu'un avec Python et Docker"
+    )
 
     # WHEN
     offre = service._parse_offre(offre_sans_competences)
@@ -152,20 +156,19 @@ def test_parse_date_invalide():
     assert isinstance(date_parsed, datetime)
 
 
-
 def test_obtenir_token_ok():
     """Obtention token OAuth2 réussie"""
     # GIVEN
     mock_response = Mock()
     mock_response.json.return_value = {"access_token": "token_123"}
     mock_response.raise_for_status = Mock()
-    
+
     service = FranceTravailService()
     service.client_id = "test_id"
     service.client_secret = "test_secret"
 
     # WHEN
-    with patch('requests.post', return_value=mock_response):
+    with patch("requests.post", return_value=mock_response):
         token = service._obtenir_token()
 
     # THEN
@@ -180,7 +183,7 @@ def test_obtenir_token_cache():
     service.token = "cached_token"
 
     # WHEN
-    with patch('requests.post') as mock_post:
+    with patch("requests.post") as mock_post:
         token = service._obtenir_token()
 
     # THEN
@@ -193,19 +196,18 @@ def test_obtenir_token_echec():
     # GIVEN
     mock_response = Mock()
     mock_response.raise_for_status.side_effect = Exception("Auth error")
-    
+
     service = FranceTravailService()
     service.client_id = "test_id"
     service.client_secret = "test_secret"
 
     # WHEN
-    with patch('requests.post', return_value=mock_response):
+    with patch("requests.post", return_value=mock_response):
         token = service._obtenir_token()
 
     # THEN
     assert token is None
     assert service.token is None
-
 
 
 def test_rechercher_batch_ok():
@@ -214,12 +216,12 @@ def test_rechercher_batch_ok():
     mock_response = Mock()
     mock_response.status_code = 200
     mock_response.json.return_value = {"resultats": [offre_json_test]}
-    
+
     service = FranceTravailService()
     service.token = "test_token"
 
     # WHEN
-    with patch('requests.get', return_value=mock_response):
+    with patch("requests.get", return_value=mock_response):
         offres = service._rechercher_batch("data scientist", None, 0, 150)
 
     # THEN
@@ -232,12 +234,12 @@ def test_rechercher_batch_status_204():
     # GIVEN
     mock_response = Mock()
     mock_response.status_code = 204
-    
+
     service = FranceTravailService()
     service.token = "test_token"
 
     # WHEN
-    with patch('requests.get', return_value=mock_response):
+    with patch("requests.get", return_value=mock_response):
         offres = service._rechercher_batch("inexistant", None, 0, 150)
 
     # THEN
@@ -249,12 +251,12 @@ def test_rechercher_batch_status_416():
     # GIVEN
     mock_response = Mock()
     mock_response.status_code = 416
-    
+
     service = FranceTravailService()
     service.token = "test_token"
 
     # WHEN
-    with patch('requests.get', return_value=mock_response):
+    with patch("requests.get", return_value=mock_response):
         offres = service._rechercher_batch("data", None, 1000, 150)
 
     # THEN
@@ -274,73 +276,76 @@ def test_rechercher_batch_sans_token():
     assert offres == []
 
 
-
 def test_rechercher_batch_avec_departement():
     """Recherche batch avec département"""
     # GIVEN
     mock_response = Mock()
     mock_response.status_code = 200
     mock_response.json.return_value = {"resultats": [offre_json_test]}
-    
+
     service = FranceTravailService()
     service.token = "test_token"
 
     # WHEN
-    with patch('requests.get', return_value=mock_response) as mock_get:
+    with patch("requests.get", return_value=mock_response) as mock_get:
         offres = service._rechercher_batch("data", "35", 0, 150)
 
     # THEN
     assert len(offres) == 1
     # Vérifier que le département est passé dans les params
     call_kwargs = mock_get.call_args[1]
-    assert call_kwargs['params']['departement'] == "35"
+    assert call_kwargs["params"]["departement"] == "35"
 
 
 def test_rechercher_offres_ok():
     """Recherche offres avec résultats"""
     # GIVEN
     service = FranceTravailService()
-    service._rechercher_batch = MagicMock(return_value=[
-        JobOffer(
-            external_id="1",
-            titre="Test",
-            entreprise="Test",
-            description="Test",
-            localisation="Paris",
-            type_contrat="CDI",
-            source="france_travail"
-        )
-    ])
+    service._rechercher_batch = MagicMock(
+        return_value=[
+            JobOffer(
+                external_id="1",
+                titre="Test",
+                entreprise="Test",
+                description="Test",
+                localisation="Paris",
+                type_contrat="CDI",
+                source="france_travail",
+            )
+        ]
+    )
 
     # WHEN
-    with patch('time.sleep'):
+    with patch("time.sleep"):
         offres = service.rechercher_offres("data", None, 150)
 
     # THEN
     assert len(offres) == 1
 
 
-
 def test_rechercher_offres_arret_si_batch_incomplet():
     """Recherche s'arrête si batch < 150"""
     # GIVEN
     service = FranceTravailService()
-    
+
     # Premier appel: 80 offres (< 150)
-    service._rechercher_batch = MagicMock(return_value=[
-        JobOffer(
-            external_id=str(i),
-            titre="Test",
-            entreprise="Test",
-            description="Test",
-            localisation="Paris",
-            type_contrat="CDI",
-            source="france_travail"
-        ) for i in range(80)
-    ])
+    service._rechercher_batch = MagicMock(
+        return_value=[
+            JobOffer(
+                external_id=str(i),
+                titre="Test",
+                entreprise="Test",
+                description="Test",
+                localisation="Paris",
+                type_contrat="CDI",
+                source="france_travail",
+            )
+            for i in range(80)
+        ]
+    )
 
     # WHEN
-    with patch('time.sleep'):
+    with patch("time.sleep"):
         offres = service.rechercher_offres("data", None, 500)
 
     # THEN
@@ -353,9 +358,10 @@ def test_rechercher_offres_limite_1000():
     """Recherche s'arrête à la limite 1000"""
     # GIVEN
     service = FranceTravailService()
-    
+
     # Chaque batch retourne 150 offres
     call_count = [0]
+
     def mock_batch(*args):
         call_count[0] += 1
         return [
@@ -366,14 +372,15 @@ def test_rechercher_offres_limite_1000():
                 description="Test",
                 localisation="Paris",
                 type_contrat="CDI",
-                source="france_travail"
-            ) for i in range(150)
+                source="france_travail",
+            )
+            for i in range(150)
         ]
-    
+
     service._rechercher_batch = MagicMock(side_effect=mock_batch)
 
     # WHEN
-    with patch('time.sleep'):
+    with patch("time.sleep"):
         offres = service.rechercher_offres("data", None, 2000)
 
     # THEN
@@ -383,4 +390,5 @@ def test_rechercher_offres_limite_1000():
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__, "-v"])

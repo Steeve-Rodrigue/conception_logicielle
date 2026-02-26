@@ -31,17 +31,16 @@ class JobAggregationService:
             Nombre d'offres synchronisées
         """
         logger.info(f" Synchronisation pour {len(termes)} termes")
-        
+
         count_total = 0
         offres_vues = set()  # Pour éviter les doublons entre termes
 
         for terme in termes:
             logger.info(f"🔎 Terme: '{terme}'")
-            
+
             # Rechercher les offres
             offers: List[JobOffer] = self.france_travail.rechercher_offres(
-                mots_cles=terme, 
-                departement=departement
+                mots_cles=terme, departement=departement
             )
 
             # Sauvegarder en base (avec déduplication)

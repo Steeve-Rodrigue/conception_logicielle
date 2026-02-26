@@ -5,6 +5,7 @@ Expose les endpoints pour la connexion, l'inscription,
 la déconnexion et la récupération des informations utilisateur.
 Utilise JWT pour la gestion des tokens d'authentification.
 """
+
 import logging
 
 from fastapi import APIRouter, HTTPException, Depends, status
@@ -68,9 +69,7 @@ async def login(credentials: LoginRequest):
         500 en cas d'erreur interne
     """
     try:
-        utilisateur_id = check_utilisateur(
-            email=credentials.email, mdp=credentials.mdp
-        )
+        utilisateur_id = check_utilisateur(email=credentials.email, mdp=credentials.mdp)
 
         if not utilisateur_id:
             raise IdentifiantsInvalidesException()

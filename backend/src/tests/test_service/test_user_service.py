@@ -1,6 +1,6 @@
 """Tests pour UserService"""
 
-from datetime import datetime, date, timedelta
+from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 from src.business_object.user import User
@@ -43,13 +43,12 @@ liste_utilisateurs = [
 ]
 
 
-
 def test_creer_utilisateur_ok():
     """Création d'utilisateur réussie"""
     # GIVEN
     email, pseudo, mdp = "nouveau@test.com", "nouveau", "MotDePasse123!"
     nom, prenom = "Nouveau", "User"
-    
+
     service = UserService()
     service.user_dao.trouver_par_email = MagicMock(return_value=None)
     service.user_dao.trouver_par_pseudo = MagicMock(return_value=None)
@@ -71,7 +70,7 @@ def test_creer_utilisateur_echec_dao():
     # GIVEN
     email, pseudo, mdp = "nouveau@test.com", "nouveau", "MotDePasse123!"
     nom, prenom = "Nouveau", "User"
-    
+
     service = UserService()
     service.user_dao.trouver_par_email = MagicMock(return_value=None)
     service.user_dao.trouver_par_pseudo = MagicMock(return_value=None)
@@ -89,7 +88,7 @@ def test_creer_utilisateur_email_invalide():
     # GIVEN
     email, pseudo, mdp = "email_invalide", "nouveau", "MotDePasse123!"
     nom, prenom = "Nouveau", "User"
-    
+
     service = UserService()
 
     # WHEN
@@ -104,7 +103,7 @@ def test_creer_utilisateur_mdp_faible():
     # GIVEN
     email, pseudo, mdp = "nouveau@test.com", "nouveau", "123"
     nom, prenom = "Nouveau", "User"
-    
+
     service = UserService()
     service.user_dao.trouver_par_email = MagicMock(return_value=None)
     service.user_dao.trouver_par_pseudo = MagicMock(return_value=None)
@@ -121,7 +120,7 @@ def test_creer_utilisateur_email_deja_utilise():
     # GIVEN
     email, pseudo, mdp = "test1@test.com", "nouveau", "MotDePasse123!"
     nom, prenom = "Nouveau", "User"
-    
+
     service = UserService()
     service.user_dao.trouver_par_email = MagicMock(return_value=liste_utilisateurs[0])
 
@@ -137,7 +136,7 @@ def test_creer_utilisateur_pseudo_deja_utilise():
     # GIVEN
     email, pseudo, mdp = "nouveau@test.com", "user1", "MotDePasse123!"
     nom, prenom = "Nouveau", "User"
-    
+
     service = UserService()
     service.user_dao.trouver_par_email = MagicMock(return_value=None)
     service.user_dao.trouver_par_pseudo = MagicMock(return_value=liste_utilisateurs[0])
@@ -148,17 +147,18 @@ def test_creer_utilisateur_pseudo_deja_utilise():
     # THEN
     assert user is None
 
+
 def test_se_connecter_ok():
     """Connexion réussie"""
     # GIVEN
     email, mdp = "test1@test.com", "MotDePasse123!"
-    
+
     service = UserService()
     service.user_dao.trouver_par_email = MagicMock(return_value=liste_utilisateurs[0])
     service.user_dao.mettre_a_jour_derniere_connexion = MagicMock(return_value=True)
 
     # WHEN
-    with patch('src.services.user_service.verify_password', return_value=True):
+    with patch("src.services.user_service.verify_password", return_value=True):
         user = service.se_connecter(email, mdp)
 
     # THEN
@@ -170,7 +170,7 @@ def test_se_connecter_email_inexistant():
     """Connexion avec email inexistant"""
     # GIVEN
     email, mdp = "inexistant@test.com", "MotDePasse123!"
-    
+
     service = UserService()
     service.user_dao.trouver_par_email = MagicMock(return_value=None)
 
@@ -185,17 +185,16 @@ def test_se_connecter_mdp_incorrect():
     """Connexion avec mot de passe incorrect"""
     # GIVEN
     email, mdp = "test1@test.com", "MauvaisMotDePasse"
-    
+
     service = UserService()
     service.user_dao.trouver_par_email = MagicMock(return_value=liste_utilisateurs[0])
 
     # WHEN
-    with patch('src.services.user_service.verify_password', return_value=False):
+    with patch("src.services.user_service.verify_password", return_value=False):
         user = service.se_connecter(email, mdp)
 
     # THEN
     assert user is None
-
 
 
 def test_modifier_utilisateur_ok():
@@ -203,7 +202,7 @@ def test_modifier_utilisateur_ok():
     # GIVEN
     id_utilisateur = 1
     nouveau_nom = "Nouveau Nom"
-    
+
     service = UserService()
     service.user_dao.trouver_par_id = MagicMock(return_value=liste_utilisateurs[0])
     service.user_dao.modifier = MagicMock(return_value=True)
@@ -219,7 +218,7 @@ def test_modifier_utilisateur_inexistant():
     """Modification utilisateur inexistant"""
     # GIVEN
     id_utilisateur = 999
-    
+
     service = UserService()
     service.user_dao.trouver_par_id = MagicMock(return_value=None)
 
@@ -235,7 +234,7 @@ def test_modifier_utilisateur_email_deja_utilise():
     # GIVEN
     id_utilisateur = 1
     email_existant = "test2@test.com"
-    
+
     service = UserService()
     service.user_dao.trouver_par_id = MagicMock(return_value=liste_utilisateurs[0])
     service.user_dao.trouver_par_email = MagicMock(return_value=liste_utilisateurs[1])
@@ -252,7 +251,7 @@ def test_modifier_utilisateur_pseudo_deja_utilise():
     # GIVEN
     id_utilisateur = 1
     pseudo_existant = "user2"
-    
+
     service = UserService()
     service.user_dao.trouver_par_id = MagicMock(return_value=liste_utilisateurs[0])
     service.user_dao.trouver_par_pseudo = MagicMock(return_value=liste_utilisateurs[1])
@@ -269,13 +268,13 @@ def test_changer_mot_de_passe_ok():
     # GIVEN
     id_utilisateur = 1
     ancien_mdp, nouveau_mdp = "MotDePasse123!", "NouveauMotDePasse123!"
-    
+
     service = UserService()
     service.user_dao.trouver_par_id = MagicMock(return_value=liste_utilisateurs[0])
     service.user_dao.modifier = MagicMock(return_value=True)
 
     # WHEN
-    with patch('src.services.user_service.verify_password', return_value=True):
+    with patch("src.services.user_service.verify_password", return_value=True):
         result = service.changer_mot_de_passe(id_utilisateur, ancien_mdp, nouveau_mdp)
 
     # THEN
@@ -287,12 +286,12 @@ def test_changer_mot_de_passe_ancien_incorrect():
     # GIVEN
     id_utilisateur = 1
     ancien_mdp, nouveau_mdp = "MauvaisMotDePasse", "NouveauMotDePasse123!"
-    
+
     service = UserService()
     service.user_dao.trouver_par_id = MagicMock(return_value=liste_utilisateurs[0])
 
     # WHEN
-    with patch('src.services.user_service.verify_password', return_value=False):
+    with patch("src.services.user_service.verify_password", return_value=False):
         result = service.changer_mot_de_passe(id_utilisateur, ancien_mdp, nouveau_mdp)
 
     # THEN
@@ -304,12 +303,12 @@ def test_changer_mot_de_passe_nouveau_faible():
     # GIVEN
     id_utilisateur = 1
     ancien_mdp, nouveau_mdp = "MotDePasse123!", "123"
-    
+
     service = UserService()
     service.user_dao.trouver_par_id = MagicMock(return_value=liste_utilisateurs[0])
 
     # WHEN
-    with patch('src.services.user_service.verify_password', return_value=True):
+    with patch("src.services.user_service.verify_password", return_value=True):
         result = service.changer_mot_de_passe(id_utilisateur, ancien_mdp, nouveau_mdp)
 
     # THEN
@@ -321,13 +320,13 @@ def test_changer_mot_de_passe_echec_dao():
     # GIVEN
     id_utilisateur = 1
     ancien_mdp, nouveau_mdp = "MotDePasse123!", "NouveauMotDePasse123!"
-    
+
     service = UserService()
     service.user_dao.trouver_par_id = MagicMock(return_value=liste_utilisateurs[0])
     service.user_dao.modifier = MagicMock(return_value=False)
 
     # WHEN
-    with patch('src.services.user_service.verify_password', return_value=True):
+    with patch("src.services.user_service.verify_password", return_value=True):
         result = service.changer_mot_de_passe(id_utilisateur, ancien_mdp, nouveau_mdp)
 
     # THEN
@@ -338,7 +337,7 @@ def test_supprimer_utilisateur_ok():
     """Suppression utilisateur réussie"""
     # GIVEN
     id_utilisateur = 1
-    
+
     service = UserService()
     service.user_dao.supprimer = MagicMock(return_value=True)
 
@@ -353,7 +352,7 @@ def test_supprimer_utilisateur_echec():
     """Suppression utilisateur échouée"""
     # GIVEN
     id_utilisateur = 999
-    
+
     service = UserService()
     service.user_dao.supprimer = MagicMock(return_value=False)
 
@@ -368,7 +367,7 @@ def test_email_deja_utilise_oui():
     """Email déjà utilisé"""
     # GIVEN
     email = "test1@test.com"
-    
+
     service = UserService()
     service.user_dao.trouver_par_email = MagicMock(return_value=liste_utilisateurs[0])
 
@@ -383,7 +382,7 @@ def test_email_deja_utilise_non():
     """Email disponible"""
     # GIVEN
     email = "disponible@test.com"
-    
+
     service = UserService()
     service.user_dao.trouver_par_email = MagicMock(return_value=None)
 
@@ -398,7 +397,7 @@ def test_pseudo_deja_utilise_oui():
     """Pseudo déjà utilisé"""
     # GIVEN
     pseudo = "user1"
-    
+
     service = UserService()
     service.user_dao.trouver_par_pseudo = MagicMock(return_value=liste_utilisateurs[0])
 
@@ -407,5 +406,3 @@ def test_pseudo_deja_utilise_oui():
 
     # THEN
     assert result is True
-
-

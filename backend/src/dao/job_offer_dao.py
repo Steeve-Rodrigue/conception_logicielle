@@ -7,6 +7,7 @@ from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
+
 class JobOfferDao(metaclass=Singleton):
     """DAO pour la gestion des offres d'emploi."""
 
