@@ -1,21 +1,26 @@
 """
 Middleware d'authentification JWT pour FastAPI.
-
 Ce fichier contient la classe pour protéger les routes :
 - JWTBearer : Pour les routes nécessitant une connexion
 """
+import logging
 
-from fastapi import Request, HTTPException, status
+from fastapi import Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from src.auth.auth_handler import decode_jwt
+from src.exceptions import (
+    TokenManquantException,
+    TokenSchemeInvalideException,
+    TokenInvalideException,
+)
+
+logger = logging.getLogger(__name__)
 
 
 class JWTBearer(HTTPBearer):
     """
     Protège les routes : vérifie que l'utilisateur a un token JWT valide.
-
-
     """
 
     def __init__(self, auto_error: bool = True):
@@ -33,30 +38,23 @@ class JWTBearer(HTTPBearer):
 
         Raises
         ------
-        HTTPException
-            Si le token est absent, invalide ou expiré
+        TokenSchemeInvalideException
+            Si le schéma n'est pas Bearer
+        TokenInvalideException
+            Si le token est invalide ou expiré
+        TokenManquantException
+            Si le token est absent
         """
-
         credentials: HTTPAuthorizationCredentials = await super().__call__(request)
 
         if credentials:
             if not credentials.scheme == "Bearer":
-                raise HTTPException(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    detail="Le schéma doit être 'Bearer <token>'",
-                )
-
+                raise TokenSchemeInvalideException()
             if not self.verify_jwt(credentials.credentials):
-                raise HTTPException(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    detail="Token invalide ou expiré",
-                )
-
+                raise TokenInvalideException()
             return credentials.credentials
 
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Token manquant"
-        )
+        raise TokenManquantException()
 
     def verify_jwt(self, jwtoken: str) -> bool:
         """
@@ -76,5 +74,5 @@ class JWTBearer(HTTPBearer):
             payload = decode_jwt(jwtoken)
             return payload is not None
         except Exception as e:
-            print(f"Erreur vérification token : {e}")
+            logger.error("Erreur vérification token : %s", e)
             return False
