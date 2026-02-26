@@ -128,3 +128,43 @@ uv run pre-commit run --files src/*
 # Tous les fichiers du projet
 uv run pre-commit run --all-files
 ```
+
+### Lancer les tests
+
+Depuis le dossier `backend`, exécutez :
+
+```bash
+
+pytest
+
+```
+
+#### Pour lancer un fichier spécifique :
+
+```bash
+
+pytest src/tests/test_service/test_user_service.py -v
+
+
+```
+
+#### Couverture des tests
+
+- Pour mesurer la couverture du code
+
+```bash
+
+pytest --cov=src
+
+```
+- Pour afficher un rapport plus détaillé :
+
+```bash
+
+pytest --cov=src --cov-report=term-missing
+
+```
+
+
+
+
