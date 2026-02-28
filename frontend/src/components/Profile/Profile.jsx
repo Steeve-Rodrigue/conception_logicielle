@@ -70,7 +70,7 @@ export default function Profile() {
                 Offres d'emploi
               </Link>
               <Link
-                to="/profil"
+                to="/profile"
                 className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Consulter son profil
