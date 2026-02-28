@@ -45,7 +45,13 @@ export default function Profile() {
     setNewSkill,
     setToastMessage,
   } = useProfile();
-  if (!profile) return <div>Chargement... Veuillez reactualiser la page</div>;
+  if (!profile) {
+    return (
+      <h2 className="text-center text-gray-500 mt-20">
+        Chargement du profil...
+      </h2>
+    );
+  }
   return (
     <div className=" bg-white  sm:py-10  lg:py-5">
       {/* HEADER */}
