@@ -17,7 +17,7 @@ from src.auth.auth_handler import (
 )
 from src.auth.auth_bearer import JWTBearer
 from src.services.user_service import UserService
-from src.authentication_dto import (
+from src.dto.authentification_dto import (
     LoginRequest,
     SignupRequest,
     LoginResponse,

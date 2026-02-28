@@ -8,7 +8,7 @@ import {
   Shield,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import image1 from "../assets/image.jpg";
+import image1 from "../../assets/image.jpg";
 
 function Accueil() {
   return (

@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Query, BackgroundTasks, status
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks, status
 from typing import Optional
 
+from src.auth.auth_bearer import JWTBearer
 from src.dao.job_offer_dao import JobOfferDao
 from src.dto.job_dto import JobOfferDTO, JobSearchResponse, SyncRequest, SyncResponse
 from src.services.job_aggregation_service import JobAggregationService
@@ -11,7 +12,12 @@ job_dao = JobOfferDao()
 job_service = JobAggregationService()
 
 
-@router.get("/", response_model=JobSearchResponse, summary="Rechercher des offres")
+@router.get(
+    "/",
+    response_model=JobSearchResponse,
+    summary="Rechercher des offres",
+    dependencies=[Depends(JWTBearer())],
+)
 def get_all_jobs(
     q: Optional[str] = Query(None, description="Recherche par mots-clés"),
     localisation: Optional[str] = Query(None, description="Filtrer par ville"),
@@ -67,7 +73,12 @@ def sync_jobs(sync_params: SyncRequest, background_tasks: BackgroundTasks):
     )
 
 
-@router.get("/{id_offre}", response_model=JobOfferDTO, summary="Détails d'une offre")
+@router.get(
+    "/{id_offre}",
+    response_model=JobOfferDTO,
+    summary="Détails d'une offre",
+    dependencies=[Depends(JWTBearer())],
+)
 def get_job_details(id_offre: int):
     """Récupère une offre par son ID"""
     offre = job_dao.trouver_par_id(id_offre)

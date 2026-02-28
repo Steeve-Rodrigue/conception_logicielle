@@ -10,16 +10,24 @@ const api = axios.create({
 //   baseURL: API_BASE_URL,
 // });
 
-/*
 // Votre fichier api.js
+
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");  // ← Récupère le token
-  console.log("Intercepteur de requête - Token trouvé:", token ? "Oui" : "Non");
-  console.log(token);
+  const token = localStorage.getItem("token"); // ← Récupère le token
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;  // ← L'ajoute à la requête
+    config.headers.Authorization = `Bearer ${token}`; // ← L'ajoute à la requête
   }
   return config;
 });
-*/
+
 export default api;
+
+/*
+
+{
+  "email": "steeve-rodrigue.takougoum@eleve.ensai.fr",
+  "mdp": "Steeve123!"
+}
+
+
+*/

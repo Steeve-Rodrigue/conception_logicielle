@@ -1,5 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import List
+from src.auth.auth_bearer import JWTBearer
+from src.auth.auth_handler import get_utilisateur_from_token
 from src.services.profile_service import ProfileService
 from src.dto.skill_dto import (
     SkillDTO,
@@ -13,8 +15,11 @@ router = APIRouter(prefix="/api/profiles", tags=["Skills"])
 profile_service = ProfileService()
 
 
-@router.post("/{id_utilisateur}/skills", status_code=201)
-def ajouter_competence(id_utilisateur: int, data: SkillCreateRequest):
+@router.post("/skills", status_code=201)
+def ajouter_competence(
+    token: str = Depends(JWTBearer()), data: SkillCreateRequest = None
+):
+    id_utilisateur = get_utilisateur_from_token(token).id_utilisateur
     profile = profile_service.obtenir_profil_utilisateur(id_utilisateur)
     if not profile:
         raise HTTPException(status_code=404, detail="Profil introuvable")
@@ -32,8 +37,9 @@ def ajouter_competence(id_utilisateur: int, data: SkillCreateRequest):
     return {"message": f"Compétence '{data.nom_competence}' ajoutée"}
 
 
-@router.get("/{id_utilisateur}/skills", response_model=SkillListResponse)
-def lister_competences(id_utilisateur: int):
+@router.get("/skill_list", response_model=SkillListResponse)
+def lister_competences(token: str = Depends(JWTBearer())):
+    id_utilisateur = get_utilisateur_from_token(token).id_utilisateur
     profile = profile_service.obtenir_profil_utilisateur(id_utilisateur)
     if not profile:
         raise HTTPException(status_code=404, detail="Profil introuvable")
@@ -43,7 +49,7 @@ def lister_competences(id_utilisateur: int):
     return SkillListResponse(
         id_utilisateur=id_utilisateur,
         nombre_competences=len(skills),
-        competences=[SkillDTO(**s.to_dict()) for s in skills],
+        competences=[SkillDTO(**s.__dict__) for s in skills],
     )
 
 

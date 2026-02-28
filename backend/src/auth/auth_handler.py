@@ -16,7 +16,7 @@ from jose import jwt, JWTError
 from dotenv import load_dotenv
 
 from src.services.user_service import UserService
-from src.authentication_dto import UtilisateurResponse
+from src.dto.authentification_dto import UtilisateurResponse
 
 load_dotenv()
 

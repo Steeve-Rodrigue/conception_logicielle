@@ -91,7 +91,7 @@ class SkillDao(metaclass=Singleton):
             logger.error(f"Erreur: la compétence existe déjà: {e}")
         return False
 
-    def _row_to_skill(row: dict) -> UserSkill:
+    def _row_to_skill(self, row: dict) -> UserSkill:
         """Convertit une ligne SQL en objet UserSkill"""
         return UserSkill(
             id_user_skill=row["id_user_skill"],

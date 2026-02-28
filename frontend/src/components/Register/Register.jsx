@@ -1,50 +1,22 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import "../style/animations.css";
-import "../style/login-page.css";
-import "../style/login-card.css";
-import "../style/login-form.css";
-import "../style/login-footer.css";
-import "../style/login-responsive.css";
-import api from "../api/api";
+import { Link } from "react-router-dom";
+import "../../style/animations.css";
+import "../../style/login-page.css";
+import "../../style/login-card.css";
+import "../../style/login-form.css";
+import "../../style/login-footer.css";
+import "../../style/login-responsive.css";
+import { useRegister } from "./useRegister";
 
 function Register() {
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    nom: "",
-    prenom: "",
-    email: "",
-    pseudo: "",
-    mdp: "",
-    confirmation_mdp: "",
-  });
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      await api.post("/auth/signup", formData);
-
-      alert("✅ Inscription réussie ! Connectez-vous maintenant.");
-      navigate("/login");
-    } catch (err) {
-      setError(err.response?.data?.detail || "Erreur lors de l'inscription");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    formData,
+    error,
+    loading,
+    showPassword,
+    setShowPassword,
+    handleChange,
+    handleSubmit,
+  } = useRegister();
 
   return (
     <div className="login-container">
