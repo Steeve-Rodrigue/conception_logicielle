@@ -52,4 +52,4 @@ if __name__ == "__main__":
 
     logger.info("API sur http://%s:%s", API_HOST, API_PORT)
     logger.info("Docs sur http://%s:%s/docs", API_HOST, API_PORT)
-    uvicorn.run(app, host=API_HOST, port=API_PORT, reload=True)
+    uvicorn.run(app, host=API_HOST, port=int(API_PORT), reload=False)

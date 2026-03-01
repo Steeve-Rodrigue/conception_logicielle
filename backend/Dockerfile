@@ -1,6 +1,14 @@
-# FICHIER FINAL
-FROM astral/uv:python3.13-trixie
-COPY . . 
-RUN uv sync 
-ENTRYPOINT ["uv", "run","main.py"] 
-# on lance le code avec la commande uv run
+# ---------- Builder ----------
+FROM ghcr.io/astral-sh/uv:python3.13-trixie AS builder
+WORKDIR /build
+COPY pyproject.toml uv.lock ./
+RUN uv sync --no-dev
+
+# ---------- Runtime ----------
+FROM ghcr.io/astral-sh/uv:python3.13-trixie
+WORKDIR /code
+COPY --from=builder /build/.venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+COPY src/ ./src/
+COPY data/ ./data/
+CMD ["python", "-m", "src.api"]
