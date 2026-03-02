@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: application
+spec:
+  selector:
+    matchLabels:
+      app: application
+  template:
+    metadata:
+      labels:
+        app: application
+    spec:
+      containers:
+        - name: application
+          image: steeverodrigue/backend:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "200Mi"
+              cpu: "300m"
+          envFrom:
+            - configMapRef:
+                name: configuration-application
+          ports:
+            - containerPort: 8000
