@@ -43,7 +43,7 @@ L'application est déployée et accessible directement sans installation :
 
 ## Prérequis
 
-- Docker et Docker Compose installés
+- Docker installés
 - Un compte [France Travail Entreprise](https://francetravail.io/) pour obtenir les credentials API
 
 ---
