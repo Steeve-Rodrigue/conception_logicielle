@@ -16,19 +16,6 @@ JobPilot est une application web qui agrège les offres d'emploi issues de l'API
 
 ---
 
-## Stack technique
-
-| Composant | Technologie |
-|---|---|
-| Backend | FastAPI + Python 3.13 |
-| Frontend | React + Vite + TailwindCSS |
-| Base de données | PostgreSQL 14 |
-| Conteneurisation | Docker + Docker Compose |
-| Orchestration | Kubernetes (SSPCloud) |
-| API externe | France Travail |
-
----
-
 ## Application en ligne
 
 L'application est déployée et accessible directement sans installation :
