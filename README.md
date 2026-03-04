@@ -52,28 +52,34 @@ L'application est déployée et accessible directement sans installation :
 ### 1. Cloner le projet
 
 ```bash
-git clone https://github.com/ton-username/jobpilot.git
-cd jobpilot
+git clone https://github.com/isaolivia2001/Projet-Conception-logicielle.git
+cd Projet-Conception-logicielle
 ```
 
 ### 2. Configurer les variables d'environnement
 
-Copier le fichier template et le remplir avec vos valeurs :
+Copier les fichiers env.template(situé a la racine du projet, dans le dossier backend et dans le dossier Frontend) et les remplir avec vos valeurs ;Certaines valeures sont par defaut.
 
 ```bash
 cp backend/.env.template backend/.env
+
+# Copier à la racine pour Docker Compose
+cp .env.template .env
+
+# Copier dans frontend pour Vite
+cp frontend/.env.template frontend/.env
 ```
 
-Le fichier `backend/.env.template` contient toutes les variables nécessaires avec leurs descriptions. Les variables obligatoires à renseigner sont :
+Le fichier `backend/.env.template` contient toutes les variables nécessaires avec leurs descriptions. 
+Les variables obligatoires à renseigner Pour le lancement local avec Docker est :
 
 | Variable | Description |
 |---|---|
-| `POSTGRES_PASSWORD` | Mot de passe PostgreSQL — choisi librement en local |
 | `CLIENT_ID_FRANCE_TRAVAIL` | Client ID de l'API France Travail |
 | `CLIENT_SECRET_FRANCE_TRAVAIL` | Secret de l'API France Travail |
-| `VITE_API_BASE_URL` | URL du backend (`http://127.0.0.1:8000` en local) |
 
-> Ne jamais commiter le fichier `.env` — il est dans le `.gitignore`.
+
+Si le lancement se fait sans  Docker Compose alors il faudra  d'une instance PostgreSQL et adapter les variables POSTGRES_HOST, POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD et POSTGRES_DATABASE en fonction de ton installation.
 
 ---
 
@@ -84,7 +90,7 @@ Le fichier `backend/.env.template` contient toutes les variables nécessaires av
 Lance tous les services depuis la racine du projet :
 
 ```bash
-docker compose --env-file backend/.env up --build
+sudo docker compose  up --build
 ```
 
 L'application démarre dans cet ordre :
