@@ -58,16 +58,17 @@ cd Projet-Conception-logicielle
 ```
 
 ### 2. Configurer les variables d'environnement
-
+Se situer a la racine : 
 Copier les fichiers env.template(situé a la racine du projet, dans le dossier backend et dans le dossier Frontend) et les remplir avec vos valeurs ;Certaines valeures sont par defaut.
 
 ```bash
+# Copier le template du backend
 cp backend/.env.template backend/.env
 
-# Copier à la racine pour Docker Compose
+# Copier le template de la racine
 cp .env.template .env
 
-# Copier dans frontend pour Vite
+# Copier le template du frontend
 cp frontend/.env.template frontend/.env
 ```
 
