@@ -123,7 +123,7 @@ docker compose down -v     # supprime aussi le volume PostgreSQL
 
 
 
-### Lancement sans Docker
+### Lancement sans Docker (Ceci n'est valable que si l'environnement actuel ne dispose pas de docker installé)
 
 **Prérequis**
 
