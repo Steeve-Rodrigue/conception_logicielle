@@ -80,9 +80,6 @@ Les variables obligatoires à renseigner Pour le lancement local avec Docker est
 | `CLIENT_ID_FRANCE_TRAVAIL` | Client ID de l'API France Travail |
 | `CLIENT_SECRET_FRANCE_TRAVAIL` | Secret de l'API France Travail |
 
-
-Si le lancement se fait sans  Docker Compose alors il faudra  d'une instance PostgreSQL et adapter les variables POSTGRES_HOST, POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD et POSTGRES_DATABASE en fonction de ton installation.
-
 ---
 
 ## Déploiement
@@ -121,3 +118,75 @@ docker compose down -v     # supprime aussi le volume PostgreSQL
 ```
 
 ---
+
+
+
+
+
+### Lancement sans Docker
+
+**Prérequis**
+
+- Python 3.13+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- Node.js 20+
+- Une instance PostgreSQL locale
+
+**Backend**
+```bash
+cd backend
+
+# Installer les dépendances
+uv sync
+
+# Lancer le serveur
+uv run python src/api.py
+```
+
+**Frontend**
+```bash
+cd frontend
+
+# Installer les dépendances
+npm install
+
+# Lancer le serveur de développement
+npm run dev
+```
+
+**Base de données**
+
+Adapter les variables suivantes dans `backend/.env` en fonction de ton installation PostgreSQL :
+```env
+POSTGRES_HOST=
+POSTGRES_PORT=
+POSTGRES_USER=
+POSTGRES_PASSWORD=        
+POSTGRES_DATABASE=
+```
+
+Puis initialiser la base :
+```bash
+cd backend
+uv run python src/dao/reset_database.py
+```
+**Variables obligatoires**
+
+Se référer au fichier `backend/.env.template` pour la liste complète. Les variables obligatoires sont :
+
+| Variable | Description |
+|---|---|
+| `POSTGRES_HOST` | Hôte PostgreSQL (`localhost` par défaut) |
+| `POSTGRES_PORT` | Port PostgreSQL (`5432` par défaut) |
+| `POSTGRES_USER` | Utilisateur PostgreSQL |
+| `POSTGRES_PASSWORD` | Mot de passe PostgreSQL |
+| `POSTGRES_DATABASE` | Nom de la base de données |
+| `POSTGRES_SCHEMA` | Schéma PostgreSQL (`app` — ne pas modifier) |
+| `CLIENT_ID_FRANCE_TRAVAIL` | Client ID de l'API France Travail |
+| `CLIENT_SECRET_FRANCE_TRAVAIL` | Secret de l'API France Travail |
+
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:5173 |
+| Backend API | http://127.0.0.1:8000 |
+| Documentation Swagger | http://127.0.0.1:8000/docs |
