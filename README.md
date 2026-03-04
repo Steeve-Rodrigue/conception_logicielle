@@ -8,10 +8,24 @@ JobPilot est une application web qui agrège les offres d'emploi issues de l'API
 
 ## Fonctionnalités
 
+- **Récupération des offres** — Les offres sont automatiquement récupérées et stockées depuis France Travail au démarrage de l'application
 - **Recherche d'offres d'emploi** — Accédez aux offres data/IA en temps réel via l'API France Travail
 - **Authentification** — Créez un compte et connectez-vous de façon sécurisée
 - **Filtres de recherche** — Affinez les offres par métier, localisation, type de contrat
 - **Profil utilisateur** — Construisez votre profil et ajoutez vos compétences
+
+---
+
+## Stack technique
+
+| Composant | Technologie |
+|---|---|
+| Backend | FastAPI + Python 3.13 |
+| Frontend | React + Vite + TailwindCSS |
+| Base de données | PostgreSQL 14 |
+| Conteneurisation | Docker + Docker Compose |
+| Orchestration | Kubernetes (SSPCloud) |
+| API externe | France Travail |
 
 ---
 
